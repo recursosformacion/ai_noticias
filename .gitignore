@@ -1,0 +1,22 @@
+# Configuración local y secretos
+osap.toml
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Entornos y registros
+*.log
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Datos locales
+data/
+*.sqlite
+*.sqlite3
