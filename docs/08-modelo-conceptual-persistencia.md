@@ -240,4 +240,4 @@ Quedan fuera: cuentas de usuario, preferencias, personalización, boletines, sus
 - Índices de consulta por estado, fecha, fuente, idioma y categoría.
 - Estrategia de migración/backup si se integra más adelante con otros sistemas (no forma parte de esta fase).
 
-El diseño SQL solo comenzará cuando se haya revisado este modelo conceptual y se hayan resuelto las restricciones de uso de las fuentes que vayan a alimentar el corpus.
+La propuesta de tablas, claves, índices y transacciones se desarrolla en [Diseño físico propuesto para MySQL/MariaDB](09-diseno-fisico-mysql.md). El diseño físico sigue siendo un borrador sujeto a revisión; no es SQL ejecutable ni autoriza crear tablas. El SQL solo se preparará después de revisar el modelo y cerrar las decisiones técnicas y de uso pendientes.
