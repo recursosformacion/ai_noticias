@@ -27,6 +27,13 @@ class FeedParserTests(unittest.TestCase):
         self.assertEqual(items[0]["url"], "https://example.org/news/1")
         self.assertEqual(items[0]["updated_at"].isoformat(), "2026-11-13T10:00:00")
 
+    def test_resolves_relative_rss_link(self):
+        xml = b"""<rss version="2.0"><channel><item>
+        <title>Relative link</title><link>/news/42</link>
+        </item></channel></rss>"""
+        _, items = parse_feed(xml, base_url="https://example.org/feed.xml")
+        self.assertEqual(items[0]["url"], "https://example.org/news/42")
+
     def test_rejects_html(self):
         with self.assertRaises(ValueError):
             parse_feed(b"<html><body>not a feed</body></html>")
