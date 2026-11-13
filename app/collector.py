@@ -4,7 +4,9 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
+import re
 import time
+import unicodedata
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit, urlunsplit
 from urllib.request import Request, urlopen
@@ -24,24 +26,27 @@ def _hash(value: str) -> bytes:
     return sha256(value.encode("utf-8", errors="replace")).digest()
 
 
+def _identity_text(value: str | None) -> str:
+    """Normaliza texto para identidad: minúsculas, sin acentos ni puntuación."""
+    value = unicodedata.normalize("NFKD", value or "")
+    value = "".join(char for char in value if not unicodedata.combining(char))
+    value = value.casefold()
+    value = "".join(char if char.isalnum() else " " for char in value)
+    return " ".join(value.split())
+
+
 def _observation_identity(item: dict) -> str:
-    """Stable per-entry identity; a destination URL is not necessarily an entry ID."""
-    if item.get("external_id"):
-        return item["external_id"]
-
-    def clean(value):
-        return " ".join((value or "").split()).casefold()
-
-    identity = {
-        "title": clean(item.get("title")),
-        "published": clean(item.get("published_raw")),
-    }
-    # When the feed omits its publication date, use the description as an
-    # additional discriminator rather than collapsing every entry at one URL.
-    if not identity["published"]:
-        identity["description"] = clean(item.get("description"))
-    digest = sha256(json.dumps(identity, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
-    return "fallback:v1:" + digest
+    """Huella independiente de URL y GUID: título normalizado + fecha de publicación."""
+    title = _identity_text(item.get("title"))
+    published = item.get("published_at")
+    if isinstance(published, datetime):
+        published_key = published.replace(tzinfo=None).isoformat(timespec="seconds")
+    else:
+        published_key = _identity_text(item.get("published_raw"))
+    if not title or not published_key:
+        raise ValueError("No se puede crear la huella: la noticia necesita título y fecha de publicación.")
+    digest = sha256((title + "|" + published_key).encode("utf-8")).hexdigest()
+    return "fingerprint:v2:" + digest
 
 
 def canonical_url(value: str | None) -> str | None:
