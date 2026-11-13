@@ -141,3 +141,21 @@ Una fuente puede ser técnicamente válida y, aun así, quedar bloqueada por sus
 7. Canales de agenda, crítica y bibliografía: validar el tratamiento diferenciado antes de ampliar volumen.
 
 La tanda inicial debe medir calidad y variedad, no maximizar el número de feeds.
+
+
+## 9. Resultado del sondeo técnico no persistente (13-11-2026)
+
+El comando local `probar_fuentes.bat` comprobó los dos endpoints incluidos en la lista de sondeo:
+
+| Canal | HTTP | Elementos | URL | Autor | Fecha | Identificador | ETag / Last-Modified |
+|---|---:|---:|---:|---:|---:|---:|---|
+| LOC – In the Muse | 200 | 10 | 10/10 | 10/10 | 10/10 | 10/10 | Sí / Sí |
+| BnF – Partitions | 200 | 12 | 12/12 | 0/12 | 12/12 | 0/12 | No / No |
+
+**Estado técnico preliminar:** ambos feeds responden y se parsean. La prueba no guarda datos (`persisted: false`) y no sustituye las pruebas de muestra editorial, condiciones de uso, captura persistente, repetición/idempotencia ni tratamiento de errores.
+
+- LOC: comprobar autoría institucional o invitada para cada elemento antes de tratar el texto. El campo author por sí solo no resuelve esa condición.
+- BnF: puede usarse la URL como identidad alternativa al no haber identificador externo. Clasificar las entradas como `BIBLIO`, no como noticias.
+- No se activa ninguno de los canales con este resultado. Ambos permanecen en `PAUSED` hasta una decisión explícita de activación.
+
+La salida de esta prueba fue facilitada por el operador local; no se ha ejecutado desde el entorno de GitHub ni se afirma que haya habido una captura persistente en la base de datos.
