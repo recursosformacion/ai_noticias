@@ -24,6 +24,26 @@ def _hash(value: str) -> bytes:
     return sha256(value.encode("utf-8", errors="replace")).digest()
 
 
+def _observation_identity(item: dict) -> str:
+    """Stable per-entry identity; a destination URL is not necessarily an entry ID."""
+    if item.get("external_id"):
+        return item["external_id"]
+
+    def clean(value):
+        return " ".join((value or "").split()).casefold()
+
+    identity = {
+        "title": clean(item.get("title")),
+        "published": clean(item.get("published_raw")),
+    }
+    # When the feed omits its publication date, use the description as an
+    # additional discriminator rather than collapsing every entry at one URL.
+    if not identity["published"]:
+        identity["description"] = clean(item.get("description"))
+    digest = sha256(json.dumps(identity, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
+    return "fallback:v1:" + digest
+
+
 def canonical_url(value: str | None) -> str | None:
     if not value:
         return None
@@ -74,9 +94,12 @@ def _get_or_create_publication(cursor, channel, item, now, existing_publication_
         )
         publication = cursor.fetchone()
     if publication is None and url_hash:
+        # A URL can be a shared search/results page. Only reuse a publication
+        # when both its canonical URL and title match (conservative deduplication).
         cursor.execute(
-            "SELECT id, news_item_id FROM news_publications WHERE url_sha256=%s ORDER BY id LIMIT 1 FOR UPDATE",
-            (url_hash,),
+            """SELECT id, news_item_id FROM news_publications
+            WHERE url_sha256=%s AND title_original=%s ORDER BY id LIMIT 1 FOR UPDATE""",
+            (url_hash, item["title"]),
         )
         publication = cursor.fetchone()
 
@@ -141,9 +164,7 @@ def _persist_item(cursor, channel, run_id, item, now):
         raise ValueError("La URL del elemento supera los 2048 caracteres admitidos.")
     if item["external_id"] and len(item["external_id"]) > 1000:
         raise ValueError("El identificador externo supera los 1000 caracteres admitidos.")
-    external_id = item["external_id"] or item["url"] or (
-        item["title"] + "|" + (item["published_raw"] or "")
-    )
+    external_id = _observation_identity(item)
     external_hash = _hash(external_id)
     content_hash = _hash(json.dumps(
         {k: item.get(k).isoformat() if isinstance(item.get(k), datetime) else item.get(k)
@@ -156,6 +177,29 @@ def _persist_item(cursor, channel, run_id, item, now):
         (channel["id"], external_hash),
     )
     observation = cursor.fetchone()
+
+    # Upgrade an existing observation created by the old URL-based fallback.
+    # Match its current title/date before changing its unique identity hash;
+    # this preserves its row, publication link and accumulated revision history.
+    if observation is None and not item.get("external_id"):
+        cursor.execute(
+            """SELECT id, content_hash, news_publication_id
+            FROM source_observations
+            WHERE source_channel_id=%s AND title_original=%s
+              AND published_at_raw <=> %s
+            ORDER BY id LIMIT 1 FOR UPDATE""",
+            (channel["id"], item["title"], item.get("published_raw")),
+        )
+        legacy = cursor.fetchone()
+        if legacy:
+            cursor.execute(
+                """UPDATE source_observations
+                SET external_id=%s, external_id_hash=%s
+                WHERE id=%s""",
+                (external_id, external_hash, legacy["id"]),
+            )
+            observation = legacy
+
     existing_pub_id = observation["news_publication_id"] if observation else None
     pub_id, news_id = _get_or_create_publication(
         cursor, channel, item, now, existing_publication_id=existing_pub_id
@@ -187,7 +231,7 @@ def _persist_item(cursor, channel, run_id, item, now):
                 updated_at_raw=%s, updated_at=%s, declared_language=%s,
                 payload_metadata=%s, content_hash=%s, last_seen_at=%s,
                 news_publication_id=%s, processing_status='CAPTURED' WHERE id=%s""",
-                (run_id, item["external_id"], item["url"], item["title"], item["description"],
+                (run_id, external_id, item["url"], item["title"], item["description"],
                  item["author"], item["published_raw"], item["published_at"],
                  item["updated_raw"], item["updated_at"], item["language"],
                  json.dumps({"canonical_url": canonical_url(item["url"])}, ensure_ascii=False),
@@ -210,7 +254,7 @@ def _persist_item(cursor, channel, run_id, item, now):
          published_at, updated_at_raw, updated_at, declared_language, payload_metadata,
          content_hash, first_seen_at, last_seen_at, news_publication_id, processing_status)
         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'CAPTURED')""",
-        (channel["id"], run_id, item["external_id"], external_hash, item["url"],
+        (channel["id"], run_id, external_id, external_hash, item["url"],
          item["title"], item["description"], item["author"], item["published_raw"],
          item["published_at"], item["updated_raw"], item["updated_at"], item["language"],
          json.dumps({"canonical_url": canonical_url(item["url"])}, ensure_ascii=False),
