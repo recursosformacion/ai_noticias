@@ -53,7 +53,7 @@ Para verificar la instalación local de MariaDB, ejecutar `verificar_bbdd_osap_n
 - API de IA con adaptador intercambiable (por ejemplo, Gemini o Groq).
 
 
-Las migraciones `001` a `003` están en `database/migrations/`. Se aplican desde `crear_bbdd_osap_noticias.bat`, leyendo la configuración local `osap.toml`. Para listar fuentes: ejecutar `ver_fuentes.bat` o `py -3 -m app.cli sources`. Para activar un canal tras revisar sus condiciones: `py -3 -m app.cli activate --source-id ID --confirm-terms-reviewed`. Para capturar canales activos: `py -3 -m app.cli ingest` o `capturar_noticias.bat`. Las dependencias están en `requirements.txt`; las pruebas unitarias se ejecutan con `py -3 -m unittest discover -s tests -v`.
+Las migraciones `001` a `005` están en `database/migrations/`. La identidad de noticias se calcula exclusivamente mediante SHA-256 de la descripción normalizada; publicaciones de distintas fuentes con la misma descripción se enlazan a un mismo registro de noticia, conservando cada publicación y su procedencia. Se aplican desde `crear_bbdd_osap_noticias.bat`, leyendo la configuración local `osap.toml`. Para listar fuentes: ejecutar `ver_fuentes.bat` o `py -3 -m app.cli sources`. Para activar un canal tras revisar sus condiciones: `py -3 -m app.cli activate --source-id ID --confirm-terms-reviewed`. Para capturar canales activos: `py -3 -m app.cli ingest` o `capturar_noticias.bat`. Las dependencias están en `requirements.txt`; las pruebas unitarias se ejecutan con `py -3 -m unittest discover -s tests -v`.
 
 
 ### Sondeo técnico previo (sin persistencia)
