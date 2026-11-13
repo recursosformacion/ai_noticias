@@ -124,7 +124,7 @@ Fuentes:
 - Página: https://bibliolore.org/
 - Información institucional sobre actividad del blog: https://www.rilm.org/aboutus/history/2025-report/
 
-**Pendiente:** localizar y confirmar el endpoint RSS/Atom directamente en la web del blog antes de registrarlo como feed automatizable. No se da por válido un endpoint supuesto por el hecho de que el sitio utilice WordPress.
+**Endpoint RSS localizado:** https://bibliolore.org/feed/ . La solicitud directa devuelve el tipo de contenido application/rss+xml; el visor de páginas utilizado en esta investigación no interpreta ese formato, por lo que la lectura real de elementos, fechas y campos queda pendiente de una prueba con un lector RSS. El endpoint se considera localizado, pero todavía no validado funcionalmente.
 
 ## 4. Estado del inventario
 
@@ -142,7 +142,7 @@ Fuentes:
 | Google News RSS | Plantilla de consulta documentada | Descubrimiento; identificar siempre el medio original |
 | AMS – Musicology Now | RSS oficial localizado | Publicación divulgativa de musicología; candidato prioritario |
 | AMS – Musicology in the news | Endpoint anunciado, pero 404 en comprobación | No activar hasta localizar URL vigente |
-| RILM – Bibliolore | Blog activo y de alta pertinencia; RSS pendiente de localizar | Candidato prioritario; confirmar endpoint |
+| RILM – Bibliolore | Blog activo; endpoint /feed/ localizado y responde como application/rss+xml; lectura funcional pendiente | Candidato prioritario; probar con feedparser |
 | DOAJ | API/OAI-PMH y metadatos documentados | Descubrimiento académico, no feed de noticias |
 
 ## 5. Criterios para dar de alta una fuente
@@ -186,6 +186,6 @@ La prioridad es probar una fuente de cada comportamiento relevante (noticia edit
 
 1. Localizar los cinco endpoints actuales de la BNE y comprobar sus respuestas.
 2. Comprobar directamente los feeds de LOC y BnF con un lector RSS, inspeccionando fechas, campos y volumen.
-3. Localizar el RSS de Bibliolore y corregir el endpoint AMS anunciado que devuelve 404.
+3. Probar funcionalmente el RSS localizado de Bibliolore y corregir el endpoint AMS anunciado que devuelve 404.
 4. Preparar una muestra de entradas reales para evaluar relevancia, duplicados y separación entre noticia, agenda y novedad bibliográfica.
 5. Revisar las condiciones de uso de cada canal antes de fijar qué metadatos o fragmentos se almacenarán.
