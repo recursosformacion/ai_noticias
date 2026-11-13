@@ -291,6 +291,65 @@ def ingest_channel(connection, channel: dict) -> dict:
     return {"run_id": run_id, "status": status, **counts, "http_status": http_status}
 
 
+
+# Only these two channels have a sufficiently clear reuse basis for a metadata-only
+# technical probe. The probe never writes feed entries to the database.
+PROBE_CANDIDATES = {
+    "https://blogs.loc.gov/music/feed/": "loc.gov",
+    "https://bibliographienationale.bnf.fr/rss/mus": "bnf.fr",
+}
+
+
+def probe_candidate_channels(connection, source_id: int | None = None) -> list[dict]:
+    with connection.cursor() as cursor:
+        sql = """SELECT s.id, s.publisher_id, s.provider_name, s.name, s.url,
+                        p.domain
+                 FROM source_channels s
+                 JOIN publishers p ON p.id=s.publisher_id
+                 WHERE s.url IN (%s, %s)"""
+        params = tuple(PROBE_CANDIDATES)
+        if source_id is not None:
+            sql += " AND s.id=%s"
+            params += (source_id,)
+        sql += " ORDER BY s.id"
+        cursor.execute(sql, params)
+        channels = cursor.fetchall()
+
+    results = []
+    for channel in channels:
+        expected_domain = PROBE_CANDIDATES.get(channel["url"])
+        if not expected_domain or channel["domain"] != expected_domain:
+            results.append({"source_id": channel["id"], "name": channel["name"],
+                            "status": "BLOCKED", "reason": "Canal fuera de la lista permitida."})
+            continue
+        try:
+            status, body, headers, final_url = _fetch(channel)
+            if status == 304:
+                raise RuntimeError("Respuesta 304 inesperada en una prueba sin validadores.")
+            if len(body) > 8 * 1024 * 1024:
+                raise RuntimeError("El feed supera el límite de 8 MiB.")
+            metadata, items = parse_feed(body, base_url=final_url)
+            results.append({
+                "source_id": channel["id"],
+                "name": channel["name"],
+                "status": "OK",
+                "http_status": status,
+                "feed_title_present": bool(metadata.get("title")),
+                "items": len(items),
+                "items_with_url": sum(bool(x.get("url")) for x in items),
+                "items_with_author": sum(bool(x.get("author")) for x in items),
+                "items_with_date": sum(bool(x.get("published_raw") or x.get("updated_raw")) for x in items),
+                "items_with_identifier": sum(bool(x.get("external_id")) for x in items),
+                "final_domain": urlsplit(final_url).hostname,
+                "etag_present": bool(headers.get("ETag") or headers.get("Etag")),
+                "last_modified_present": bool(headers.get("Last-Modified")),
+                "persisted": False,
+            })
+        except Exception as exc:
+            results.append({"source_id": channel["id"], "name": channel["name"],
+                            "status": "ERROR", "reason": str(exc)[:500], "persisted": False})
+    return results
+
 def ingest_active_channels(connection, source_id: int | None = None) -> list[dict]:
     with connection.cursor() as cursor:
         sql = """SELECT id, publisher_id, provider_name, name, url, etag, last_modified
