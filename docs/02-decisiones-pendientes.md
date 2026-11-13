@@ -4,10 +4,13 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 
 ## Fuentes
 
-- [ ] Confirmar la URL y el formato real de cada feed de Google News que se vaya a utilizar.
-- [ ] Verificar si BNE, Gallica y Library of Congress ofrecen feeds oficiales adecuados para novedades musicales.
-- [ ] Identificar APIs oficiales disponibles para las instituciones que no tengan RSS.
-- [ ] Localizar feeds de revistas, universidades y centros de musicología de acceso abierto.
+- [x] Localizar fuentes oficiales y documentar los primeros endpoints RSS de LOC y BnF (véase [inventario de fuentes](03-inventario-fuentes.md)).
+- [ ] Localizar y comprobar las URL actuales de los cinco feeds de la BNE.
+- [ ] Comprobar técnicamente la respuesta, campos, fechas y volumen de los feeds identificados de LOC y BnF.
+- [ ] Validar las consultas de Google News RSS y la extracción de la URL del medio original.
+- [ ] Investigar feeds propios de revistas, universidades y centros de musicología.
+- [ ] Revisar las condiciones de uso específicas de cada fuente antes de activarla.
+- [ ] Identificar APIs oficiales disponibles para instituciones que no tengan RSS.
 - [ ] Definir idiomas y territorios que cubrirá la primera versión.
 - [ ] Establecer frecuencia y límites de consulta por fuente.
 
