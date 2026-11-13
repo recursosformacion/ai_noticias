@@ -322,10 +322,10 @@ No se incluyen usuarios, preferencias, suscripciones, boletines, campañas, mét
 
 ## 8. Compatibilidad y migraciones
 
-La primera migración SQL se ha redactado para MySQL 8.0.16 o posterior en `database/migrations/001_initial_schema.sql`; el catálogo inicial de tipos de contenido está en `002_seed_content_types.sql`. La migración 001 crea `osap_noticias` si no existe y define `schema_migrations`. La migración 002 depende de la primera.
+La versión de desarrollo comunicada es **MariaDB 10.4.32**. La migración inicial y el catálogo semilla se han revisado a nivel de sintaxis para ese motor: `database/migrations/001_initial_schema.sql` y `002_seed_content_types.sql`. Se utilizan InnoDB, `utf8mb4`, `DATETIME(6)`, JSON (tipo compatible en MariaDB), claves foráneas e inserciones `ON DUPLICATE KEY UPDATE`.
 
-No se ha comprobado la versión del servidor ni se ha ejecutado el SQL. La compatibilidad con MariaDB no está validada. Las migraciones se ejecutan una sola vez y en orden; el registro `schema_migrations` evita repetirlas.
+Esta revisión estática no sustituye una ejecución real. La creación de `osap_noticias` y sus tablas queda pendiente de lanzar el inicializador desde el entorno local y comprobar el resultado. Las migraciones se ejecutan en orden; `schema_migrations` registra las aplicadas y las operaciones de creación/semilla están preparadas para repetirse sin duplicar objetos o tipos.
 
 ## 9. Próximo paso
 
-Validar este diseño lógico-físico y confirmar la versión del servidor. Después se prepararán migraciones SQL versionadas y datos semilla, primero para revisión; la creación efectiva de `osap_noticias` y sus tablas se realizará solo con acceso y autorización explícitos al servidor correspondiente.
+Ejecutar `crear_bbdd_osap_noticias.bat` desde la carpeta del proyecto o mediante un acceso directo del escritorio. El script utiliza el cliente `mysql` de MariaDB y solicita el usuario y la contraseña de desarrollo de forma interactiva; no guarda credenciales.
