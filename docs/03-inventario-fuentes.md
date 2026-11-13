@@ -117,6 +117,15 @@ Fuentes:
 - https://www.ams-net.org/feeds/
 - https://musicologynow.org/about-musicology-now/
 
+### 1.5 RILM – Bibliolore
+
+**Bibliolore** es el blog del Répertoire International de Littérature Musicale (RILM). La organización confirma que publica entradas nuevas semanalmente y que trata investigación musical global, musicología, etnomusicología, música popular, educación y patrimonio. La página principal estaba actualizada el 11 de noviembre de 2026, por lo que es un candidato editorial activo y de alta pertinencia.
+
+- Página: https://bibliolore.org/
+- Información institucional sobre actividad del blog: https://www.rilm.org/aboutus/history/2025-report/
+
+**Pendiente:** localizar y confirmar el endpoint RSS/Atom directamente en la web del blog antes de registrarlo como feed automatizable. No se da por válido un endpoint supuesto por el hecho de que el sitio utilice WordPress.
+
 ## 4. Estado del inventario
 
 | Institución/canal | Estado | Tratamiento propuesto |
@@ -133,6 +142,7 @@ Fuentes:
 | Google News RSS | Plantilla de consulta documentada | Descubrimiento; identificar siempre el medio original |
 | AMS – Musicology Now | RSS oficial localizado | Publicación divulgativa de musicología; candidato prioritario |
 | AMS – Musicology in the news | Endpoint anunciado, pero 404 en comprobación | No activar hasta localizar URL vigente |
+| RILM – Bibliolore | Blog activo y de alta pertinencia; RSS pendiente de localizar | Candidato prioritario; confirmar endpoint |
 | DOAJ | API/OAI-PMH y metadatos documentados | Descubrimiento académico, no feed de noticias |
 
 ## 5. Criterios para dar de alta una fuente
@@ -156,6 +166,6 @@ No se debe inventar ni inferir una URL RSS a partir de la dirección de una web.
 La siguiente tanda de trabajo debería cubrir:
 1. Localizar los cinco endpoints actuales de la BNE y comprobar sus respuestas.
 2. Comprobar directamente los feeds de LOC y BnF con un lector RSS, inspeccionando fechas, campos y volumen.
-3. Ampliar el inventario con revistas y centros de musicología; ya se ha localizado Musicology Now y el directorio de feeds de AMS, con un endpoint que requiere corrección.
+3. Ampliar el inventario con revistas y centros de musicología; ya se han localizado Musicology Now y Bibliolore, y se ha detectado un endpoint AMS que requiere corrección.
 4. Preparar una muestra de entradas reales para evaluar relevancia, duplicados y separación entre noticia, agenda y novedad bibliográfica.
 5. Revisar las condiciones de uso de cada canal antes de fijar qué metadatos o fragmentos se almacenarán.
