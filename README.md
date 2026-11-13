@@ -1,0 +1,46 @@
+# ai_noticias
+
+Paquete independiente para recopilar, clasificar y preparar noticias relacionadas con la música, con almacenamiento en MySQL/MariaDB y posibilidad de generar boletines por correo.
+
+## Estado
+
+**Fase actual: recopilación y definición de requisitos.**
+
+Este repositorio recoge ideas, fuentes potenciales, decisiones de arquitectura y cuestiones pendientes. Todavía no contiene una aplicación funcional ni debe interpretarse como una especificación cerrada.
+
+## Objetivo
+
+Construir un recolector que:
+
+1. Consulte periódicamente fuentes RSS y APIs públicas.
+2. Detecte novedades y evite registrar repetidamente la misma noticia.
+3. Clasifique las entradas según su interés musical mediante reglas y un proveedor de IA intercambiable.
+4. Genere resúmenes divulgativos en español cuando proceda.
+5. Guarde las noticias, su procedencia y el resultado del análisis en MySQL/MariaDB.
+6. Permita preparar y enviar boletines a usuarios que hayan solicitado expresamente recibirlos.
+
+## Documentación
+
+- [Propuesta funcional y arquitectura inicial](docs/01-propuesta-funcional.md)
+- [Decisiones y cuestiones pendientes](docs/02-decisiones-pendientes.md)
+
+## Principios iniciales
+
+- Priorizar RSS y APIs oficiales frente al scraping de páginas.
+- Conservar la URL y los metadatos de la fuente original.
+- No confundir el texto original con el resumen generado por IA.
+- No publicar ni redistribuir artículos completos protegidos por derechos de autor.
+- Mantener separados recolección, clasificación, almacenamiento y envío.
+- Diseñar el proveedor de IA y el servicio de correo como componentes sustituibles.
+- No enviar correos sin consentimiento explícito y mecanismo de baja.
+- No incorporar credenciales, claves API ni datos personales al repositorio.
+
+## Tecnologías propuestas (no definitivas)
+
+- Python.
+- feedparser para feeds RSS/Atom.
+- MySQL/MariaDB para persistencia.
+- API de IA con adaptador intercambiable (por ejemplo, Gemini o Groq).
+- SMTP para el envío, sujeto a elección y validación del proveedor.
+
+Las decisiones definitivas se documentarán antes de iniciar la implementación.
