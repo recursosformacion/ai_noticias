@@ -57,8 +57,10 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 ## Base de datos e integración
 
 - [x] Nombre acordado para la base de datos MySQL/MariaDB: `osap_noticias`.
-- [ ] Confirmar versión y configuración objetivo de MySQL/MariaDB.
-- [ ] Definir conexión y gestión de credenciales mediante configuración externa, nunca en Git.
+- [x] Definir compatibilidad inicial del borrador SQL: MySQL 8.0.16 o posterior; MariaDB queda pendiente de validación.
+- [ ] Comprobar versión real del servidor antes de ejecutar migraciones.
+- [x] Preparar plantilla `osap.example.toml` y excluir configuración local/secretos mediante `.gitignore`.
+- [ ] Configurar credenciales de una cuenta específica para `osap_noticias`, fuera de Git.
 - [ ] Acordar retención de registros de captura, errores, análisis y envíos.
 - [ ] Definir si el paquete expondrá API propia o será consumido directamente por otro servicio.
 
