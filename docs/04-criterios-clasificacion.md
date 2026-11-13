@@ -107,12 +107,15 @@ Para cada elemento analizado:
 - is_relevant: si pertenece al ámbito musical definido.
 - content_type: uno de los tipos controlados anteriores.
 - categories: cero o más identificadores del catálogo temático.
-- language: idioma del contenido original.
+- original_language: idioma del contenido original, normalizado preferiblemente según BCP 47.
+- language_source: origen de la identificación (declarado por el feed, detectado o inferido).
+- language_confidence: confianza de la detección cuando no exista un idioma declarado fiable.
 - relevance_reason: justificación breve basada en el contenido recibido.
 - confidence: confianza estimada, con escala definida por la aplicación.
 - needs_review: indica si la información requiere revisión.
-- editorial_title_es: título en español, si se genera.
+- editorial_title_es: título editorial en español, si se genera.
 - summary_es: resumen breve en español, si se genera.
+- translations: traducciones editoriales adicionales, separadas del original y vinculadas a la versión traducida.
 - taxonomy_version y prompt_version: versiones usadas para que el resultado sea reproducible.
 
 Una entrada no pertinente puede permanecer registrada como descartada, junto con el motivo, para evitar analizarla repetidamente. Una entrada pendiente no debe confundirse con una entrada rechazada.
@@ -121,10 +124,11 @@ Una entrada no pertinente puede permanecer registrada como descartada, junto con
 
 La clasificación no debe destruir ni sustituir los datos originales. Se conservarán por separado:
 
-- Título, descripción y fecha tal como los entrega la fuente.
+- Título, descripción, idioma y fecha tal como los entrega cada fuente.
+- Versiones lingüísticas oficiales publicadas por una misma fuente, conservando su URL e idioma.
 - URL y datos de procedencia.
 - Tipo y categorías asignadas por el sistema.
-- Texto editorial generado por IA.
+- Texto editorial generado por IA y sus traducciones, cada uno con su idioma identificado.
 - Estado, motivo de exclusión o revisión y metadatos del análisis.
 
 Así será posible corregir una clasificación o cambiar la taxonomía sin tener que volver a descargar el contenido original.
