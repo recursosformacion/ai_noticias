@@ -83,11 +83,14 @@ Una noticia puede tener varias publicaciones: por ejemplo, una edición en ingl�
 **Analysis run (ejecución de análisis)**
 - Cada intento de clasificación/redacción de una publicación o noticia.
 - Proveedor, modelo, versión de prompt, versión de taxonomía, fecha, idioma(s) de entrada, campos enviados, estado, coste/uso si está disponible y error.
+- Debe identificar exactamente qué publicación(es) y qué revisión(es) de contenido se usaron como evidencia de entrada; un resultado no puede quedar asociado solo a una noticia abstracta sin trazabilidad del material analizado.
+- Puede analizar una publicación individual o varias publicaciones relacionadas, pero debe registrar la selección concreta de entradas.
 - Debe distinguir análisis completado, respuesta inválida, fallo temporal y pendiente.
 - La captura no depende del éxito del análisis.
 
 **Editorial analysis (resultado editorial)**
 - Resultado estructurado de una ejecución válida: pertinencia, tipo de contenido, categorías propuestas, idioma detectado, evidencia, confianza, motivo y necesidad de revisión.
+- El idioma se detecta por publicación/revisión; la pertinencia, el tipo y los temas se consolidan en la noticia cuando la evidencia permite afirmar que varias publicaciones tratan del mismo hecho.
 - Debe conservarse el histórico; un nuevo prompt o modelo genera otro resultado, no reemplaza silenciosamente el anterior.
 - El estado editorial vigente se puede derivar del último resultado aceptado, conservando la trazabilidad.
 - Las asignaciones de categorías se guardan como relaciones controladas y versionadas, no solo como texto JSON.
