@@ -98,7 +98,6 @@ Esta es una propuesta de partida, no un catálogo cerrado:
 - Música clásica y académica.
 - Música coral y vocal.
 - Ópera y música escénica.
-- Jazz y blues.
 - Rock y pop (incluidos indie, metal y otras escenas derivadas).
 - Música urbana, hip-hop, rap y R&B.
 - Reguetón y músicas urbanas latinoamericanas.
