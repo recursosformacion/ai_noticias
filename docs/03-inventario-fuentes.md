@@ -104,6 +104,32 @@ Canal de NPR dedicado a noticias, reportajes, actuaciones y contenidos musicales
 Fuente:
 - https://www.npr.org/sections/music/
 
+### 1.9 Revistas musicales en español: Scherzo y Beckmesser
+
+Se han localizado dos canales especializados en música clásica y ópera:
+
+- **Scherzo:** https://scherzo.es/feed
+- **Beckmesser:** https://www.beckmesser.com/feed
+
+Ambos endpoints responden con content-type application/rss+xml en la comprobación. La identificación de las direcciones procede de un directorio de feeds, no de documentación técnica del editor; por tanto, se consideran localizados, pero aún falta comprobar sus elementos, frecuencia, campos y condiciones directamente con un lector RSS y en las páginas de cada publicación.
+
+**Evaluación:** candidatos de alta pertinencia para noticias, críticas y actualidad de música clásica y ópera en español. Se deben separar las críticas/opiniones de las noticias, siguiendo los tipos de contenido definidos en el documento 04.
+
+Fuentes editoriales:
+- https://scherzo.es/
+- https://www.beckmesser.com/
+
+### 1.10 Ópera Actual
+
+ÓPERA ACTUAL es una revista especializada en ópera en español y mantiene secciones diferenciadas de actualidad, críticas y entrevistas. Se ha localizado una URL con parámetros de formato RSS:
+
+- URL candidata: https://www.operaactual.com/?format=feed&type=rss
+
+Sin embargo, la comprobación realizada devolvió contenido HTML, no un documento RSS identificable. Se registra como **endpoint pendiente de validación**, no como feed listo para activar. La página editorial sí confirma actividad reciente y una cobertura especializada de actualidad operística.
+
+Fuente:
+- https://www.operaactual.com/
+
 ## 2. Agregadores y consultas temáticas
 
 ### 2.1 Google News RSS
@@ -184,6 +210,9 @@ Fuentes:
 | Bachtrack – News / Articles / Reviews | Tres feeds documentados oficialmente; feed de noticias responde como application/rss+xml | Candidato prioritario para clásica, ópera, artículos y críticas; separar tipos |
 | Music Business Worldwide | Endpoint /feed/ localizado; responde como text/xml; validación funcional pendiente | Candidato prioritario para industria musical |
 | NPR Music | Endpoint RSS localizado; responde como text/xml; validación funcional pendiente | Candidato para noticias y reportajes musicales generales |
+| Scherzo | Endpoint /feed responde como application/rss+xml; origen de URL por directorio RSS | Candidato de alta pertinencia en español para clásica y ópera |
+| Beckmesser | Endpoint /feed responde como application/rss+xml; origen de URL por directorio RSS | Candidato de alta pertinencia en español para clásica y ópera |
+| Ópera Actual | URL candidata con parámetros RSS, pero la comprobación devolvió HTML | No activar hasta verificar un endpoint RSS real |
 | DOAJ | API/OAI-PMH y metadatos documentados | Descubrimiento académico, no feed de noticias |
 
 ## 5. Criterios para dar de alta una fuente
@@ -208,6 +237,7 @@ Para evitar que la primera implementación dependa de una lista excesiva de cana
 
 ### Tanda inicial de pruebas
 - LOC – In the Muse: contenido musical editorial y patrimonial, con RSS institucional localizado.
+- Scherzo y Beckmesser: fuentes en español para música clásica y ópera; comprobar campos y distinguir noticias de críticas.
 - Bachtrack – News: noticias internacionales de música clásica, ópera y actividad artística.
 - Music Business Worldwide: actualidad de la industria musical.
 - NPR Music: reportajes y actualidad musical de interés general.
@@ -217,6 +247,7 @@ Para evitar que la primera implementación dependa de una lista excesiva de cana
 - BnF – Bibliographie nationale / Partitions: novedades bibliográficas musicales, almacenadas con tipo BIBLIO y no como noticia periodística.
 
 ### Tanda de ampliación
+- Ópera Actual: incorporar solo cuando se localice un endpoint RSS válido.
 - Bachtrack – Articles y Reviews: artículos, entrevistas y críticas, diferenciados de las noticias.
 - NPR Music: mantener como candidato hasta verificar la frecuencia y la calidad de metadatos.
 - LOC – NLS Music Notes, por su especialización en accesibilidad.
@@ -231,7 +262,7 @@ La prioridad es probar una fuente de cada comportamiento relevante (noticia edit
 ## 7. Próxima investigación
 
 1. Localizar los cinco endpoints actuales de la BNE y comprobar sus respuestas.
-2. Comprobar directamente los feeds de LOC, BnF, Bachtrack, Music Business Worldwide y NPR con un lector RSS, inspeccionando fechas, campos y volumen.
+2. Comprobar directamente los feeds de LOC, BnF, Bachtrack, Music Business Worldwide, NPR, Scherzo y Beckmesser con un lector RSS, inspeccionando fechas, campos y volumen.
 3. Probar funcionalmente el RSS localizado de Bibliolore y corregir el endpoint AMS anunciado que devuelve 404.
 4. Preparar una muestra de entradas reales para evaluar relevancia, duplicados y separación entre noticia, agenda y novedad bibliográfica.
 5. Revisar las condiciones de uso de cada canal antes de fijar qué metadatos o fragmentos se almacenarán.
