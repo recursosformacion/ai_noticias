@@ -24,9 +24,10 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 
 ## Criterios editoriales
 
-- [ ] Precisar qué significa «noticia musical» para este proyecto.
-- [x] Definir cobertura general y especializada: el recolector abarcará todos los ámbitos musicales; cada usuario elegirá los temas que desea seguir.
+- [x] Definir criterios iniciales de inclusión, exclusión y clasificación por tipo de contenido y tema (véase [criterios editoriales](04-criterios-clasificacion.md)); falta validarlos con una muestra real.
+- [x] Definir cobertura general y especializada: el recolector abarcará todos los ámbitos musicales y clasificará cada noticia; las preferencias personales quedan para una fase posterior.
 - [x] Preparar una primera taxonomía jerárquica de ámbitos generales y especialidades (propuesta en la sección 5 de la propuesta funcional); pendiente validarla con noticias reales.
+- [x] Separar el tipo de contenido (noticia, evento, publicación académica, novedad bibliográfica, etc.) del tema musical; criterios en el documento 04.
 - [ ] Decidir si las noticias se publican automáticamente o pasan por revisión.
 - [ ] Definir el tratamiento de noticias repetidas, actualizaciones y artículos sindicados.
 - [ ] Decidir la longitud y el tono del resumen en español.
@@ -63,9 +64,9 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 
 ## Decisiones que conviene mantener desde el principio
 
-1. Una noticia no se pierde porque falle la IA o el correo.
-2. Recolectar, analizar y enviar son procesos independientes.
-3. Toda noticia conserva la referencia a su fuente original.
+1. Una noticia no se pierde porque falle la IA.
+2. Recolectar, analizar y persistir son procesos independientes y reanudables.
+3. Toda noticia conserva la referencia a su fuente original y las apariciones en otras fuentes.
 4. Los resúmenes generados no sustituyen ni se confunden con el texto original.
-5. La IA y el proveedor de correo son sustituibles.
-7. Ninguna cuota gratuita ni endpoint de terceros se considerará estable sin verificación periódica.
+5. La IA es sustituible y sus resultados deben conservar el modelo y las versiones de instrucciones utilizadas.
+6. Ninguna cuota gratuita ni endpoint de terceros se considerará estable sin verificación periódica.
