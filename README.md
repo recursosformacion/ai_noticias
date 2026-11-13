@@ -14,8 +14,8 @@ Construir un recolector que:
 
 1. Consulte periódicamente fuentes RSS y APIs públicas.
 2. Detecte novedades y evite registrar repetidamente la misma noticia.
-3. Clasifique las entradas según su interés musical mediante reglas y un proveedor de IA intercambiable.
-4. Genere resúmenes divulgativos en español cuando proceda.
+3. Clasifique las entradas según su interés musical e identifique su idioma original mediante reglas y un proveedor de IA intercambiable.
+4. Genere resúmenes divulgativos en español y deje preparado el almacenamiento de traducciones adicionales.
 5. Guarde las noticias, su procedencia y el resultado del análisis en MySQL/MariaDB.
 6. Deje preparada una base documental reutilizable para fases posteriores, sin implementar todavía funciones de usuario ni boletines.
 
@@ -26,12 +26,13 @@ Construir un recolector que:
 - [Inventario inicial de fuentes y canales](docs/03-inventario-fuentes.md)
 - [Criterios editoriales y de clasificación](docs/04-criterios-clasificacion.md)
 - [Flujo de ingesta, estados y deduplicación](docs/05-flujo-ingesta-y-estados.md)
+- [Idioma original, traducciones y presentación multilingüe](docs/06-idiomas-y-traducciones.md)
 
 ## Principios iniciales
 
 - Priorizar RSS y APIs oficiales frente al scraping de páginas.
 - Conservar la URL y los metadatos de la fuente original.
-- No confundir el texto original con el resumen generado por IA.
+- Conservar el idioma y el texto original, separados del resumen editorial y de sus traducciones.
 - No publicar ni redistribuir artículos completos protegidos por derechos de autor.
 - Mantener separados recolección, clasificación y almacenamiento.
 - Diseñar el proveedor de IA como componente sustituible.
