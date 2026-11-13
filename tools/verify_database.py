@@ -60,7 +60,7 @@ def main() -> int:
         print(f"Tablas InnoDB: {engine_count}")
         print(f"Migraciones registradas: {', '.join(sorted(migrations)) or 'ninguna'}")
         print(f"Tipos de contenido: {len(content_types)} (esperados: {len(EXPECTED_CONTENT_TYPES)})")
-        print("Canales por estado: " + (source_counts.replace("\\n", "; ") or "ninguno"))
+        print("Canales por estado: " + (source_counts.replace("\n", "; ") or "ninguno"))
 
         if missing_tables:
             print("FALTAN TABLAS: " + ", ".join(sorted(missing_tables)))
