@@ -1,7 +1,7 @@
 # Inventario inicial de fuentes y canales
 
 **Fecha de comprobación:** 13 de noviembre de 2026.  
-**Estado:** investigación documental inicial. Los endpoints se han localizado en páginas institucionales; antes de incorporarlos a una ejecución automática habrá que comprobar periódicamente que siguen respondiendo y revisar el contenido que entregan.
+**Estado:** inventario documental revisado el 13 de noviembre de 2026. La localización de un endpoint, su funcionamiento técnico y la autorización para tratar sus contenidos son tres validaciones distintas. La matriz operativa está en [Matriz de pruebas de ingesta](07-matriz-pruebas-ingesta.md).
 
 Este documento separa tres cosas que no deben confundirse:
 
@@ -88,7 +88,7 @@ Publicación especializada en noticias, empleo y análisis de la industria music
 
 - RSS localizado: https://www.musicbusinessworldwide.com/feed/
 
-**Evaluación:** candidato prioritario para industria musical, mercado, sellos, editoriales, distribución, plataformas y derechos. Un directorio de feeds registra el canal como activo y la petición directa respondió con content-type text/xml. Falta validar el contenido con feedparser y revisar las condiciones del editor; no debe confundirse la validación del endpoint con una autorización para reutilizar artículos completos.
+**Evaluación técnica:** endpoint localizado y registrado como RSS activo por un directorio externo; falta validar el contenido con un parser real. **Restricción de uso:** las condiciones oficiales limitan el sitio a uso personal no comercial y prohíben copiar, traducir, publicar, licenciar o vender materiales sin consentimiento. No activar el envío de títulos/descripciones a IA ni el almacenamiento sistemático de contenidos hasta obtener autorización o determinar una base de uso compatible. Mantener como candidato documental, no como fuente autorizada para la primera tanda. [Condiciones oficiales](https://www.musicbusinessworldwide.com/terms-of-use/).
 
 Fuente de descubrimiento:
 - https://www.musicbusinessworldwide.com/
@@ -99,7 +99,7 @@ Canal de NPR dedicado a noticias, reportajes, actuaciones y contenidos musicales
 
 - RSS localizado: https://feeds.npr.org/1039/rss.xml
 
-**Evaluación:** candidato para música general y reportajes, especialmente para ampliar la cobertura anglófona más allá de la industria. La dirección del feed aparece en directorios RSS y la petición directa respondió con content-type text/xml. Falta validar los elementos, actividad reciente y condiciones de uso desde la documentación de NPR.
+**Evaluación técnica:** endpoint localizado; falta validar elementos y actividad con un parser real. **Restricción de uso decisiva:** las condiciones de NPR limitan sus feeds a usos personales no comerciales o a determinadas entidades 501(c)(3), exigen atribución y enlace, restringen redistribución/modificación y prohíben usar sus contenidos para construir o entrenar sistemas de IA sin consentimiento escrito. Por tanto, no enviar titulares ni fragmentos a un proveedor de IA ni incorporar el canal al flujo automatizado hasta obtener permiso escrito y aclarar el alcance de almacenamiento. [Condiciones de uso de NPR](https://www.npr.org/about-npr/179876898/terms-of-use).
 
 Fuente:
 - https://www.npr.org/sections/music/
@@ -125,7 +125,7 @@ Fuentes editoriales:
 
 - URL candidata: https://www.operaactual.com/?format=feed&type=rss
 
-Sin embargo, la comprobación realizada devolvió contenido HTML, no un documento RSS identificable. Se registra como **endpoint pendiente de validación**, no como feed listo para activar. La página editorial sí confirma actividad reciente y una cobertura especializada de actualidad operística.
+Sin embargo, la comprobación anterior devolvió contenido HTML, no un documento RSS identificable. Se registra como **endpoint pendiente de validación**, no como feed listo para activar. La sección de actualidad muestra publicaciones recientes y distingue noticias y breves, de modo que sigue siendo una fuente editorial relevante si se localiza un canal válido. [Actualidad](https://www.operaactual.com/actualidad/). La página editorial sí confirma actividad reciente y una cobertura especializada de actualidad operística.
 
 Fuente:
 - https://www.operaactual.com/
@@ -208,12 +208,12 @@ Fuentes:
 | AMS – Musicology in the news | Endpoint anunciado, pero 404 en comprobación | No activar hasta localizar URL vigente |
 | RILM – Bibliolore | Blog activo; endpoint /feed/ localizado y responde como application/rss+xml; lectura funcional pendiente | Candidato prioritario; probar con feedparser |
 | Bachtrack – News / Articles / Reviews | Tres feeds documentados oficialmente; feed de noticias responde como application/rss+xml | Candidato prioritario para clásica, ópera, artículos y críticas; separar tipos |
-| Music Business Worldwide | Endpoint /feed/ localizado; responde como text/xml; validación funcional pendiente | Candidato prioritario para industria musical |
-| NPR Music | Endpoint RSS localizado; responde como text/xml; validación funcional pendiente | Candidato para noticias y reportajes musicales generales |
+| Music Business Worldwide | Endpoint /feed/ localizado; validación funcional pendiente | Restricción de uso personal/no comercial y limitación de copia/traducción: permiso necesario antes de IA o almacenamiento sistemático |
+| NPR Music | Endpoint RSS localizado; validación funcional pendiente | Condiciones restringen uso a determinados fines no comerciales y prohíben uso de contenido para IA sin consentimiento escrito; no activar en análisis automatizado |
 | Scherzo | Endpoint /feed responde como application/rss+xml; origen de URL por directorio RSS | Candidato de alta pertinencia en español para clásica y ópera |
 | Beckmesser | Endpoint /feed responde como application/rss+xml; origen de URL por directorio RSS | Candidato de alta pertinencia en español para clásica y ópera |
 | Ópera Actual | URL candidata con parámetros RSS, pero la comprobación devolvió HTML | No activar hasta verificar un endpoint RSS real |
-| DOAJ | API/OAI-PMH y metadatos documentados | Descubrimiento académico, no feed de noticias |
+| DOAJ | API/OAI-PMH y metadatos documentados | Descubrimiento académico; metadatos CC0, no implica licencia del texto completo |
 
 ## 5. Criterios para dar de alta una fuente
 
@@ -259,10 +259,23 @@ Para evitar que la primera implementación dependa de una lista excesiva de cana
 
 La prioridad es probar una fuente de cada comportamiento relevante (noticia editorial, agregador, agenda y novedad bibliográfica), no activar muchos feeds de golpe.
 
-## 7. Próxima investigación
+## 7. Resultado de la revisión de uso y prioridad
+
+- **NPR:** técnicamente puede ser un feed útil, pero queda bloqueado para análisis IA y reutilización automatizada hasta obtener consentimiento escrito. Las condiciones vigentes prohíben expresamente el uso de contenidos para construir o entrenar IA sin permiso y restringen los usos de los feeds.
+- **Music Business Worldwide:** no se presume autorización por la existencia del RSS. Sus términos limitan el uso a fines personales no comerciales y restringen copia, traducción y publicación. Requiere autorización antes de integrarlo en el procesamiento previsto.
+- **DOAJ:** sus metadatos de revistas y artículos están disponibles bajo CC0, pero el propio DOAJ advierte que la licencia de los metadatos no altera los derechos del artículo descrito. El OAI-PMH público puede llevar hasta 30 días de retraso; no es un canal de noticias en tiempo real. [Términos DOAJ](https://doaj.org/terms/) · [OAI-PMH](https://doaj.org/docs/oai-pmh/).
+- **Bachtrack:** documentación oficial confirma tres feeds distintos (news, articles, reviews) y feeds de críticas por categoría. Deben tratarse como tipos editoriales separados. [Documentación RSS](https://bachtrack.com/fr_FR/handler/documentation/view/ug-rss-feeds).
+- **Library of Congress:** la página oficial confirma los canales de música, música accesible y agenda, con descripciones diferenciadas. [Suscripciones oficiales](https://www.loc.gov/subscribe/).
+- **BnF:** confirma feeds institucionales para actualidad, prensa y agenda; los feeds bibliográficos de partituras/sonido deben seguir separados de actualidad. [Índice oficial](https://www.bnf.fr/fr/flux-rss-site-bnffr).
+- **BNE:** se confirma documentalmente que existen cinco canales, pero no se han localizado sus URLs actuales. No se inventarán endpoints.
+
+La clasificación técnica/permiso por canal se completa con la matriz de pruebas. Ningún estado «RSS localizado» significa autorización automática para almacenar o procesar textos.
+
+## 8. Próxima investigación
 
 1. Localizar los cinco endpoints actuales de la BNE y comprobar sus respuestas.
-2. Comprobar directamente los feeds de LOC, BnF, Bachtrack, Music Business Worldwide, NPR, Scherzo y Beckmesser con un lector RSS, inspeccionando fechas, campos y volumen.
-3. Probar funcionalmente el RSS localizado de Bibliolore y corregir el endpoint AMS anunciado que devuelve 404.
-4. Preparar una muestra de entradas reales para evaluar relevancia, duplicados y separación entre noticia, agenda y novedad bibliográfica.
-5. Revisar las condiciones de uso de cada canal antes de fijar qué metadatos o fragmentos se almacenarán.
+2. Validar técnicamente con un parser real los feeds de LOC, BnF, Bachtrack, Scherzo, Beckmesser, Musicology Now y Bibliolore.
+3. Resolver el permiso de NPR y Music Business Worldwide antes de cualquier análisis automatizado.
+4. Probar Google News para identificar editor original y resolver URL.
+5. Preparar una muestra etiquetada para medir relevancia, tipos, idiomas y duplicados.
+6. Revisar las condiciones de cada fuente antes de decidir retención y tratamiento IA.
