@@ -23,6 +23,7 @@ Construir un recolector que:
 
 - [Propuesta funcional y arquitectura inicial](docs/01-propuesta-funcional.md)
 - [Decisiones y cuestiones pendientes](docs/02-decisiones-pendientes.md)
+- [Inventario inicial de fuentes y canales](docs/03-inventario-fuentes.md)
 
 ## Principios iniciales
 
