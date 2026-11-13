@@ -246,7 +246,7 @@ def ingest_channel(connection, channel: dict) -> dict:
         else:
             if len(body) > 8 * 1024 * 1024:
                 raise RuntimeError("El feed supera el límite de 8 MiB.")
-            _, items = parse_feed(body)
+            _, items = parse_feed(body, base_url=final_url)
             counts["received"] = len(items)
             for item in items:
                 try:
