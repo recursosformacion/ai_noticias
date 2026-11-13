@@ -143,7 +143,7 @@ Artículo, anuncio o edición concreta publicada por un editor.
 - `created_at`, `updated_at` DATETIME NOT NULL.
 - Índices: INDEX(`publisher_id`, `published_at`); INDEX(`news_item_id`); INDEX(`language_detected`, `published_at`); INDEX(`url_sha256`).
 
-La identidad de publicación no debe imponerse con UNIQUE sobre URL sin estudiar redirecciones, parámetros significativos y reutilización de URL. La aplicación normaliza, busca candidatos y confirma identidad. `news_item_id` puede quedar NULL mientras la relación entre publicaciones sea dudosa.
+La identidad común de una noticia se basa en SHA-256 de la descripción normalizada, no en la URL, el título, la fecha ni el GUID. Varias publicaciones de distintos editores con la misma huella se enlazan al mismo `news_item`; cada publicación conserva su publisher, URL y metadatos originales. La URL se conserva como procedencia y navegación, no como clave de identidad.
 
 La relación `news_items.primary_publication_id` es una referencia de conveniencia. Debe validarse en la aplicación que la publicación principal pertenece a esa misma noticia.
 
@@ -284,7 +284,7 @@ Las claves foráneas usarán inicialmente `ON DELETE RESTRICT`. No se borrará e
 ## 4. Transacciones, concurrencia e idempotencia
 
 1. Cada fetch_run se crea antes de consultar el canal y se cierra con su resultado, incluso si hay error.
-2. Cada observación se inserta o actualiza mediante la clave de identidad del canal; las colisiones se verifican comparando el identificador original.
+2. Cada observación se inserta o actualiza mediante la huella SHA-256 de la descripción normalizada, con unicidad dentro del canal. La misma huella entre canales enlaza publicaciones diferentes al mismo `news_item`.
 3. La creación/enlace de una publicación y la actualización de la observación se realizan en una transacción.
 4. La consolidación de publicaciones en news_items es una operación separada y conservadora; no se fusionan automáticamente candidatos dudosos.
 5. Cada análisis se registra antes de llamar al proveedor. Su resultado validado y las asignaciones/editorial_texts se guardan en una transacción.
@@ -322,7 +322,7 @@ No se incluyen usuarios, preferencias, suscripciones, boletines, campañas, mét
 
 ## 8. Compatibilidad y migraciones
 
-La versión de desarrollo es **MariaDB 10.4.32**. El usuario ha ejecutado las migraciones 001 y 002 y ha verificado 17 tablas InnoDB, 23 claves foráneas y los diez tipos de contenido iniciales. La migración 003 registra seis canales RSS candidatos en estado `PAUSED`; su aplicación local queda pendiente. Las migraciones se ejecutan en orden y `schema_migrations` registra las versiones.
+La versión de desarrollo es **MariaDB 10.4.32**. La migración 005 añade `news_publications.description_sha256` e índice para consolidar publicaciones de distintas fuentes por descripción normalizada. El usuario ha ejecutado las migraciones 001 y 002 y ha verificado 17 tablas InnoDB, 23 claves foráneas y los diez tipos de contenido iniciales. La migración 003 registra seis canales RSS candidatos en estado `PAUSED`; su aplicación local queda pendiente. Las migraciones se ejecutan en orden y `schema_migrations` registra las versiones.
 
 ## 9. Próximo paso
 
