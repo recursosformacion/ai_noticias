@@ -64,7 +64,9 @@ La BNE declara disponer de cinco canales RSS para:
 La referencia localizada es una entrada del propio Blog de la BNE que confirma esos cinco canales:
 https://www.bne.es/es/blog/blog-bne/las-10-preguntas-mas-frecuentes-sobre-la-bne
 
-**Pendiente:** localizar las URL actuales exactas de los cinco feeds y comprobar que siguen activos. La página de referencia es antigua, por lo que no se incorporan endpoints deducidos ni se da por garantizada su vigencia. La web actual de la BNE mantiene secciones diferenciadas de noticias, agenda y blog, pero la consulta automatizada de las páginas institucionales devuelve acceso restringido (403) en esta investigación; los resultados públicos consultados no exponen los enlaces RSS concretos. Por tanto, no se declara resuelto el endpoint.
+**Pendiente:** localizar las URL actuales exactas de los cinco feeds y comprobar que siguen activos. La página de referencia es antigua, por lo que no se incorporan endpoints deducidos ni se da por garantizada su vigencia. La web actual de la BNE mantiene secciones diferenciadas de noticias, agenda y blog, pero la consulta automatizada de la página institucional devolvió acceso restringido (403) en esta investigación; los resultados públicos no exponen los enlaces RSS concretos. Por tanto, no se declara resuelto el endpoint.
+
+**Vía técnica complementaria:** el portal [datos.bne.es](https://datos.bne.es/) publica registros bibliográficos enlazados y ofrece descargas en RDF/XML, JSON-LD y Turtle para registros individuales. Es una fuente de datos de catálogo, no un sustituto de los cinco feeds de actualidad ni una API de noticias confirmada. Puede investigarse más adelante para novedades bibliográficas musicales, con su propio tipo de contenido.
 
 ### 1.6 Bachtrack
 
@@ -111,7 +113,7 @@ Se han localizado dos canales especializados en música clásica y ópera:
 - **Scherzo:** https://scherzo.es/feed
 - **Beckmesser:** https://www.beckmesser.com/feed
 
-Ambos endpoints responden con content-type application/rss+xml en la comprobación. La identificación de las direcciones procede de un directorio de feeds, no de documentación técnica del editor; por tanto, se consideran localizados, pero aún falta comprobar sus elementos, frecuencia, campos y condiciones directamente con un lector RSS y en las páginas de cada publicación.
+Las direcciones se han localizado mediante un directorio de feeds, no mediante documentación técnica del editor. La herramienta web identifica que son endpoints RSS, pero no puede interpretar el MIME application/rss+xml; por tanto, siguen pendientes de parseo real, frecuencia, campos y condiciones directamente con un lector RSS y en las páginas de cada publicación.
 
 **Evaluación:** candidatos de alta pertinencia para noticias, críticas y actualidad de música clásica y ópera en español. Se deben separar las críticas/opiniones de las noticias, siguiendo los tipos de contenido definidos en el documento 04.
 
@@ -271,7 +273,11 @@ La prioridad es probar una fuente de cada comportamiento relevante (noticia edit
 
 La clasificación técnica/permiso por canal se completa con la matriz de pruebas. Ningún estado «RSS localizado» significa autorización automática para almacenar o procesar textos.
 
-## 8. Próxima investigación
+## 8. Límite de esta validación documental
+
+Las respuestas de RSS/Atom se han localizado, pero el visor web empleado no interpreta directamente algunos tipos MIME XML de los feeds. Por ello, no se afirma que el parser los haya leído ni que se hayan inspeccionado los elementos de cada canal. La validación funcional corresponde a la ejecución de la matriz 07 con feedparser o un cliente de API, que deberá registrar muestras y resultados reproducibles.
+
+## 9. Próxima investigación
 
 1. Localizar los cinco endpoints actuales de la BNE y comprobar sus respuestas.
 2. Validar técnicamente con un parser real los feeds de LOC, BnF, Bachtrack, Scherzo, Beckmesser, Musicology Now y Bibliolore.
