@@ -84,10 +84,21 @@ def _get_or_create_publication(cursor, channel, item, now, existing_publication_
         pub_id = publication["id"]
         news_id = publication["news_item_id"]
         cursor.execute(
-            "UPDATE news_publications SET last_seen_at=%s, "
-            "title_original=IF(title_original='',%s,title_original), "
-            "description_original=COALESCE(description_original,%s) WHERE id=%s",
-            (now, item["title"], item["description"], pub_id),
+            """UPDATE news_publications SET last_seen_at=%s, title_original=%s,
+            description_original=COALESCE(%s,description_original),
+            author_original=COALESCE(%s,author_original),
+            canonical_url=COALESCE(%s,canonical_url),
+            original_url=COALESCE(%s,original_url),
+            url_sha256=COALESCE(%s,url_sha256),
+            published_at=COALESCE(%s,published_at),
+            updated_at=COALESCE(%s,updated_at),
+            published_at_raw=COALESCE(%s,published_at_raw),
+            updated_at_raw=COALESCE(%s,updated_at_raw),
+            language_declared=COALESCE(%s,language_declared)
+            WHERE id=%s""",
+            (now, item["title"], item["description"], item["author"], canonical,
+             item["url"], url_hash, item["published_at"], item["updated_at"],
+             item["published_raw"], item["updated_raw"], item["language"], pub_id),
         )
         if news_id is None:
             cursor.execute(
