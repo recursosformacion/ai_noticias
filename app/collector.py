@@ -3,7 +3,9 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from hashlib import sha256
+import html
 import json
+import re
 import time
 import unicodedata
 from urllib.error import HTTPError, URLError
@@ -34,18 +36,24 @@ def _identity_text(value: str | None) -> str:
     return " ".join(value.split())
 
 
+def _normalized_description(value: str | None) -> str:
+    """Normaliza la descripción, eliminando HTML, entidades y diferencias tipográficas."""
+    text = html.unescape(value or "")
+    text = re.sub(r"(?is)<(script|style)\\b.*?>.*?</\\1>", " ", text)
+    text = re.sub(r"(?s)<[^>]*>", " ", text)
+    return _identity_text(text)
+
+
+def _description_digest(value: str | None) -> bytes:
+    normalized = _normalized_description(value)
+    if not normalized:
+        raise ValueError("No se puede identificar la noticia: falta una descripción con contenido.")
+    return sha256(normalized.encode("utf-8")).digest()
+
+
 def _observation_identity(item: dict) -> str:
-    """Huella independiente de URL y GUID: título normalizado + fecha de publicación."""
-    title = _identity_text(item.get("title"))
-    published = item.get("published_at")
-    if isinstance(published, datetime):
-        published_key = (published.astimezone(timezone.utc).replace(tzinfo=None) if published.tzinfo else published).isoformat(timespec="seconds")
-    else:
-        published_key = _identity_text(item.get("published_raw"))
-    if not title or not published_key:
-        raise ValueError("No se puede crear la huella: la noticia necesita título y fecha de publicación.")
-    digest = sha256((title + "|" + published_key).encode("utf-8")).hexdigest()
-    return digest
+    """Huella de identidad basada exclusivamente en la descripción normalizada."""
+    return _description_digest(item.get("description")).hex()
 
 
 def canonical_url(value: str | None) -> str | None:
@@ -88,6 +96,7 @@ def _fetch(channel: dict) -> tuple[int, bytes, dict, str]:
 def _get_or_create_publication(cursor, channel, item, now, existing_publication_id=None):
     canonical = canonical_url(item["url"])
     url_hash = _hash(canonical) if canonical else None
+    description_digest = _description_digest(item.get("description"))
     publication = None
     # Reuse the publication already linked to this source observation, including
     # Atom entries that expose an ID but no URL.
@@ -113,6 +122,7 @@ def _get_or_create_publication(cursor, channel, item, now, existing_publication_
         cursor.execute(
             """UPDATE news_publications SET last_seen_at=%s, title_original=%s,
             description_original=COALESCE(%s,description_original),
+            description_sha256=%s,
             author_original=COALESCE(%s,author_original),
             canonical_url=COALESCE(%s,canonical_url),
             original_url=COALESCE(%s,original_url),
@@ -123,7 +133,7 @@ def _get_or_create_publication(cursor, channel, item, now, existing_publication_
             updated_at_raw=COALESCE(%s,updated_at_raw),
             language_declared=COALESCE(%s,language_declared)
             WHERE id=%s""",
-            (now, item["title"], item["description"], item["author"], canonical,
+            (now, item["title"], item["description"], description_digest, item["author"], canonical,
              item["url"], url_hash, item["published_at"], item["updated_at"],
              item["published_raw"], item["updated_raw"], item["language"], pub_id),
         )
@@ -140,20 +150,37 @@ def _get_or_create_publication(cursor, channel, item, now, existing_publication_
         )
         return pub_id, news_id
 
+    # La misma descripción normalizada en otra fuente representa la misma noticia.
+    # Se conserva una publicación por editor, pero se enlaza al news_item compartido.
     cursor.execute(
-        "INSERT INTO news_items (status, first_detected_at, last_detected_at) VALUES ('ACTIVE',%s,%s)",
-        (now, now),
+        """SELECT news_item_id FROM news_publications
+        WHERE description_sha256=%s AND news_item_id IS NOT NULL
+        ORDER BY id LIMIT 1 FOR UPDATE""",
+        (description_digest,),
     )
-    news_id = cursor.lastrowid
+    shared_item = cursor.fetchone()
+    if shared_item:
+        news_id = shared_item["news_item_id"]
+        cursor.execute(
+            "UPDATE news_items SET last_detected_at=%s WHERE id=%s",
+            (now, news_id),
+        )
+    else:
+        cursor.execute(
+            "INSERT INTO news_items (status, first_detected_at, last_detected_at) VALUES ('ACTIVE',%s,%s)",
+            (now, now),
+        )
+        news_id = cursor.lastrowid
     cursor.execute(
         """INSERT INTO news_publications
         (publisher_id, news_item_id, external_id, canonical_url, original_url, url_sha256,
-         title_original, description_original, author_original, published_at, updated_at,
-         published_at_raw, updated_at_raw, language_declared, first_seen_at, last_seen_at)
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+         title_original, description_original, description_sha256, author_original,
+         published_at, updated_at, published_at_raw, updated_at_raw, language_declared,
+         first_seen_at, last_seen_at)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
         (
             channel["publisher_id"], news_id, item["external_id"], canonical, item["url"],
-            url_hash, item["title"], item["description"], item["author"],
+            url_hash, item["title"], item["description"], description_digest, item["author"],
             item["published_at"], item["updated_at"], item["published_raw"],
             item["updated_raw"], item["language"], now, now,
         ),
@@ -169,7 +196,7 @@ def _persist_item(cursor, channel, run_id, item, now):
     if item["external_id"] and len(item["external_id"]) > 1000:
         raise ValueError("El identificador externo supera los 1000 caracteres admitidos.")
     identity_digest = _observation_identity(item)
-    external_id = "fingerprint:v2:" + identity_digest
+    external_id = "fingerprint:v3:" + identity_digest
     external_hash = bytes.fromhex(identity_digest)
     content_hash = _hash(json.dumps(
         {k: item.get(k).isoformat() if isinstance(item.get(k), datetime) else item.get(k)
