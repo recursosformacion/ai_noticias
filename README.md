@@ -29,6 +29,7 @@ Construir un recolector que:
 - [Idioma original, traducciones y presentación multilingüe](docs/06-idiomas-y-traducciones.md)
 - [Matriz de pruebas de ingesta](docs/07-matriz-pruebas-ingesta.md)
 - [Modelo conceptual de persistencia](docs/08-modelo-conceptual-persistencia.md)
+- [Diseño físico propuesto para MySQL/MariaDB](docs/09-diseno-fisico-mysql.md)
 
 ## Principios iniciales
 
