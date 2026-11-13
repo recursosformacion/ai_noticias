@@ -89,21 +89,83 @@ La base de datos deberá distinguir el catálogo global de categorías de las pr
 
 Las fuentes podrán tener etiquetas temáticas orientativas, pero no serán la única forma de clasificar: una misma fuente puede publicar contenidos de varias áreas y la clasificación final debe hacerse sobre cada noticia.
 
-## 5. Clasificación temática inicial
+## 5. Taxonomía temática inicial
 
-Categorías candidatas:
+La taxonomía se plantea como un árbol de temas seleccionables. El usuario podrá seguir una rama completa (por ejemplo, «Jazz») o afinar la selección en subtemas. Una noticia podrá recibir varias etiquetas; no se forzará a encajar en una única sección.
 
-- Música clásica.
+Esta es una propuesta de partida, no un catálogo cerrado:
+
+### A. Actualidad musical general
+- Noticias generales de música.
+- Industria musical y mercado.
+- Sellos, editoriales, promotores y salas.
+- Plataformas digitales, streaming y distribución.
+- Tecnología, inteligencia artificial y herramientas musicales.
+- Derechos de autor, licencias y legislación.
+- Políticas culturales, financiación y ayudas.
+- Trabajo, asociaciones y organizaciones profesionales.
+
+### B. Géneros y tradiciones musicales
+- Música clásica y académica.
 - Música coral y vocal.
-- Musicología e investigación.
-- Partituras, edición y publicaciones musicales.
-- Manuscritos y fuentes históricas.
-- Patrimonio musical, archivos y bibliotecas.
-- Interpretación, conciertos y festivales.
-- Compositores, intérpretes, agrupaciones e instituciones.
-- Educación y formación musical.
+- Ópera y música escénica.
+- Jazz y blues.
+- Rock y pop.
+- Música urbana, hip-hop y rap.
+- Música electrónica y experimental.
+- Folk, músicas tradicionales y del mundo.
+- Música antigua y prácticas históricas.
+- Bandas, música de viento y música para conjuntos.
+- Música religiosa y litúrgica.
+- Otros géneros y escenas locales.
 
-La clasificación deberá permitir varias categorías por noticia y conservar una explicación breve de por qué se considera pertinente. Las categorías definitivas y sus límites se acordarán con ejemplos reales.
+### C. Actividad y actualidad artística
+- Conciertos, giras y temporadas.
+- Festivales y ciclos.
+- Estrenos y nuevas obras.
+- Lanzamientos discográficos y audiovisuales.
+- Premios, concursos y convocatorias.
+- Entrevistas y perfiles.
+- Fallecimientos, homenajes y aniversarios.
+- Noticias de orquestas, coros, bandas y otros conjuntos.
+- Noticias de teatros, auditorios y salas.
+
+### D. Creación, interpretación y formación
+- Compositores y creación musical.
+- Intérpretes, directores y solistas.
+- Dirección coral y práctica de conjunto.
+- Instrumentos, técnica e interpretación.
+- Educación, conservatorios y universidades.
+- Cursos, talleres y formación.
+- Investigación, musicología y etnomusicología.
+- Composición, arreglos, edición y transcripción.
+
+### E. Partituras, archivos y patrimonio
+- Partituras y publicaciones musicales.
+- Manuscritos y fuentes históricas.
+- Bibliotecas, archivos y colecciones.
+- Digitalización y acceso abierto.
+- Patrimonio material e inmaterial.
+- Instrumentos históricos y organología.
+- Restauración, catalogación y conservación.
+
+### F. Sociedad y música
+- Música y sociedad.
+- Música y salud, cuando la noticia sea informativa y esté respaldada por fuentes.
+- Inclusión, accesibilidad y participación.
+- Música en medios, cine, videojuegos y publicidad.
+- Educación comunitaria y proyectos sociales.
+
+### Reglas de clasificación
+
+- Las ramas superiores funcionarán como selecciones amplias: elegir «Jazz» incluirá sus subtemas presentes y futuros.
+- Las categorías podrán combinarse; por ejemplo, una noticia de IA aplicada a la restauración de partituras podrá etiquetarse como tecnología, IA y patrimonio musical.
+- Se distinguirá el **tema** de las entidades mencionadas (personas, obras, agrupaciones, instituciones, lugares). Seguir a un compositor concreto podría añadirse como preferencia de entidad en una fase posterior, sin convertir cada nombre propio en una categoría.
+- La clasificación debe guardar tanto las etiquetas asignadas como la versión de la taxonomía utilizada, para que los cambios futuros no alteren silenciosamente el significado del histórico.
+- La fuente de procedencia orientará el análisis, pero no determinará por sí sola la categoría: cada noticia se clasificará por su contenido.
+- Se admitirán etiquetas «otros» y «pendiente de clasificación» para no descartar noticias solo porque el árbol todavía no contemple su tema.
+
+La taxonomía se validará con una muestra de noticias reales de ámbitos distintos antes de cerrar el catálogo definitivo.
 
 ## 6. Uso de IA
 
