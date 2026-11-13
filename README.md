@@ -25,6 +25,7 @@ Construir un recolector que:
 - [Decisiones y cuestiones pendientes](docs/02-decisiones-pendientes.md)
 - [Inventario inicial de fuentes y canales](docs/03-inventario-fuentes.md)
 - [Criterios editoriales y de clasificación](docs/04-criterios-clasificacion.md)
+- [Flujo de ingesta, estados y deduplicación](docs/05-flujo-ingesta-y-estados.md)
 
 ## Principios iniciales
 
