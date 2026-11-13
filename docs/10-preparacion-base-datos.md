@@ -21,6 +21,6 @@ La contraseña no se documenta aquí. El fichero versionado se ha saneado y el v
 
 La migración 001 está redactada para **MySQL 8.0.16 o posterior**. No se declara todavía compatibilidad validada con MariaDB. Antes de ejecutarla se debe comprobar la versión real del servidor y revisar los permisos de la cuenta específica de ai_noticias.
 
-La migración debe ejecutarse una sola vez y en orden. Aunque varias tablas usan `IF NOT EXISTS`, el alta de la clave foránea circular de publicación principal no es una operación repetible sin control de migraciones. El ejecutor debe consultar `schema_migrations` y no volver a lanzar una versión ya aplicada.
+Las migraciones se aplican en orden y el ejecutor consulta `schema_migrations` antes de cada versión. Las tablas de la primera migración usan `IF NOT EXISTS`; la referencia a publicación principal se valida en la aplicación para evitar una dependencia circular. El catálogo de tipos también usa una inserción idempotente.
 
 No se ha ejecutado ninguna migración ni se ha realizado ninguna escritura en la base de datos.
