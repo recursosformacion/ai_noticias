@@ -321,3 +321,29 @@ Fuentes oficiales consultadas:
 4. Una prueba técnica de RSS debe limitarse a comprobar conectividad, estructura y campos necesarios; no debe convertirse en almacenamiento de textos editoriales sujetos a restricciones.
 
 La primera captura de LOC debe ser pequeña y verificable. La autorización de reutilización de los textos de blogs del personal no debe extenderse automáticamente a colaboradores invitados, fotografías, material enlazado ni contenidos de terceros.
+
+
+## 11. Resultado de la prueba técnica de feeds (13-11-2026)
+
+La ejecución local de `probar_fuentes.bat` el 13-11-2026, contra los dos canales incluidos en la lista permitida de sondeo, obtuvo:
+
+| Canal | HTTP | Elementos | Con URL | Con autor | Con fecha | Con identificador | Validadores HTTP |
+|---|---:|---:|---:|---:|---:|---:|---|
+| LOC – In the Muse (ID 1) | 200 | 10 | 10 | 10 | 10 | 10 | ETag y Last-Modified |
+| BnF – Bibliographie nationale / Partitions (ID 6) | 200 | 12 | 12 | 0 | 12 | 0 | Ninguno |
+
+Ambos feeds proporcionaron título de canal y fueron parseados correctamente. El dominio final coincidió con el esperado. El sondeo informó `persisted: false` en los dos casos: no se guardaron publicaciones, observaciones ni ejecuciones de captura, y no se modificó el estado de los canales.
+
+### Interpretación y límites
+
+- **LOC – In the Muse:** resultado técnico satisfactorio y metadatos completos en los diez elementos examinados. La presencia de autor en el feed no acredita que sea empleado de LOC. La propia Library of Congress explica que sus blogs son escritos por personal y, ocasionalmente, por autores invitados; el texto de blogs del personal se puede reutilizar con atribución al autor y a LOC. Por tanto, antes de enviar una entrada a IA o persistir su texto debe identificarse si el autor actúa como personal LOC o como invitado. La categoría «Guest bloggers» del sitio es una señal útil, pero no debe inferirse que todos los autores que aparecen en esa categoría sean invitados: algunas entradas están allí por su temática y son escritas por personal. Fuentes: https://blogs.loc.gov/about/ y https://blogs.loc.gov/music/category/guest-bloggers/.
+- **BnF – Partitions:** resultado técnico satisfactorio. La falta de GUID/identificador no impide una identidad técnica inicial porque los doce elementos tienen URL; la URL se puede usar como alternativa de identidad, conservando el valor bruto. Al no ofrecer ETag ni Last-Modified, las consultas posteriores no podrán depender de validadores HTTP y deberán respetar una frecuencia prudente. Es un feed de novedades bibliográficas, no de noticias periodísticas: debe tratarse como `BIBLIO` y mantenerse separado del corpus de actualidad.
+- La prueba solo acredita conectividad, parseo y presencia de campos. No constituye una revisión de los doce contenidos, no demuestra relevancia editorial ni amplía los permisos de uso.
+- No se ha probado todavía la captura persistente ni la idempotencia de estos dos canales en la base de datos local.
+
+### Decisión operativa tras el sondeo
+
+1. Mantener ambos canales en `PAUSED`.
+2. LOC queda como candidato editorial, pendiente de poder distinguir de forma fiable las entradas de personal y las de invitados antes del tratamiento automatizado.
+3. BnF queda como candidato técnico para una prueba independiente de novedades bibliográficas. Su activación requiere que se decida expresamente iniciar esa prueba como contenido `BIBLIO`.
+4. No ejecutar `activate` ni `ingest` como consecuencia automática de esta prueba. La activación requiere revisión y confirmación explícita de las condiciones y del uso concreto.
