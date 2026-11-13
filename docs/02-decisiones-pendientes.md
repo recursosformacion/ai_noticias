@@ -14,10 +14,12 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 
 - [x] Localizar fuentes oficiales y documentar los primeros endpoints RSS de LOC y BnF (véase [inventario de fuentes](03-inventario-fuentes.md)).
 - [ ] Localizar y comprobar las URL actuales de los cinco feeds de la BNE.
-- [ ] Comprobar técnicamente la respuesta, campos, fechas y volumen de los feeds identificados de LOC y BnF.
-- [ ] Validar las consultas de Google News RSS y la extracción de la URL del medio original.
+- [ ] Ejecutar la matriz de pruebas de ingesta sobre los feeds priorizados y registrar los resultados reales de parser, campos, fechas, idioma y volumen.
+- [ ] Validar Google News RSS, la resolución de URL y la identificación del editor original.
+- [ ] Localizar los endpoints actuales de la BNE; la existencia histórica de cinco canales no basta para configurarlos.
 - [x] Ampliar inventario con Bachtrack, Music Business Worldwide, NPR Music, Scherzo y Beckmesser; sus endpoints están localizados y pendientes de validación de contenido.
 - [x] Registrar Ópera Actual como fuente editorial relevante, pero no activar el endpoint candidato porque la comprobación devolvió HTML en lugar de RSS.
+- [ ] Resolver autorización para NPR (uso de IA expresamente restringido sin consentimiento escrito) y Music Business Worldwide (uso limitado y restricciones de copia/traducción) antes de activarlas.
 - [ ] Revisar las condiciones de uso específicas de cada fuente antes de activarla.
 - [ ] Identificar APIs oficiales disponibles para instituciones que no tengan RSS.
 - [ ] Definir idiomas y territorios que cubrirá la primera versión.
@@ -36,6 +38,12 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 - [ ] Definir el tratamiento de noticias repetidas, actualizaciones y artículos sindicados.
 - [ ] Decidir la longitud y el tono del resumen editorial en español.
 - [ ] Validar la detección de idioma con feeds multilingües y textos breves.
+
+## Matriz de pruebas y modelo conceptual
+
+- [x] Definir protocolo y matriz de pruebas técnicas, editoriales, de duplicación, idioma, reintentos y persistencia (véase [07-matriz-pruebas-ingesta](07-matriz-pruebas-ingesta.md)); pendiente ejecutar pruebas con parser real.
+- [x] Consolidar modelo conceptual separando publisher, canal, ejecución, observación, publicación, noticia consolidada, análisis, textos editoriales y traducciones (véase [08-modelo-conceptual-persistencia](08-modelo-conceptual-persistencia.md)).
+- [ ] Revisar y aprobar el modelo conceptual antes de traducirlo a tablas y relaciones SQL.
 
 ## IA
 
@@ -65,7 +73,8 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 - [ ] Elegir cron, programador del sistema o worker persistente.
 - [ ] Definir métricas mínimas: fuentes consultadas, elementos nuevos, duplicados, aceptados, descartados, errores y coste/cuota de IA.
 - [ ] Establecer política de reintentos y alertas para fuentes que fallen repetidamente.
-- [ ] Preparar un conjunto de pruebas con RSS reales y respuestas simuladas de IA.
+- [x] Preparar un conjunto de escenarios y una matriz de pruebas con RSS reales y respuestas simuladas de IA.
+- [ ] Ejecutar la matriz con muestras reales y guardar evidencias por fuente.
 
 ## Decisiones que conviene mantener desde el principio
 
