@@ -37,8 +37,11 @@ def main() -> int:
         if args.command == "sources":
             with connection.cursor() as cursor:
                 cursor.execute(
-                    """SELECT id, name, url, status, declared_language, topic_hint,
-                    terms_url, terms_reviewed_at FROM source_channels ORDER BY id"""
+                    """SELECT s.id, s.name, s.url, s.status, s.declared_language, s.topic_hint,
+                    ct.code AS default_content_type, s.terms_url, s.terms_reviewed_at
+                    FROM source_channels s
+                    LEFT JOIN content_types ct ON ct.id=s.default_content_type_id
+                    ORDER BY s.id"""
                 )
                 rows = cursor.fetchall()
             print(json.dumps(rows, ensure_ascii=False, indent=2, default=str))
