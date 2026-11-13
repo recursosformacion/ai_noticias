@@ -1,6 +1,6 @@
 # ai_noticias
 
-Paquete independiente para recopilar, clasificar y preparar noticias relacionadas con la música, con almacenamiento en MySQL/MariaDB y posibilidad de generar boletines por correo.
+Paquete independiente para recopilar, clasificar y preparar noticias de todos los ámbitos musicales, tanto generales como especializados, con almacenamiento en MySQL/MariaDB y posibilidad de generar boletines por correo.
 
 ## Estado
 
