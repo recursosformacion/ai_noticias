@@ -99,14 +99,19 @@ Esta es una propuesta de partida, no un catálogo cerrado:
 - Música coral y vocal.
 - Ópera y música escénica.
 - Jazz y blues.
-- Rock y pop.
-- Música urbana, hip-hop y rap.
+- Rock y pop (incluidos indie, metal y otras escenas derivadas).
+- Música urbana, hip-hop, rap y R&B.
+- Reguetón y músicas urbanas latinoamericanas.
 - Música electrónica y experimental.
-- Folk, músicas tradicionales y del mundo.
+- Jazz y blues.
+- Flamenco y músicas de raíz ibérica.
+- Músicas latinoamericanas y caribeñas.
+- Folk, country, bluegrass y otras músicas tradicionales y del mundo.
+- Reggae, ska y músicas jamaicanas.
 - Música antigua y prácticas históricas.
 - Bandas, música de viento y música para conjuntos.
 - Música religiosa y litúrgica.
-- Otros géneros y escenas locales.
+- Otros géneros, fusiones y escenas locales.
 
 ### C. Actividad y actualidad artística
 - Conciertos, giras y temporadas.
