@@ -12,11 +12,11 @@ El sistema debe mantener la trazabilidad hasta la fuente original y distinguir c
 
 1. **Fuentes:** mantener un catálogo de fuentes RSS/Atom y APIs, con URL, tipo, idioma, temática, frecuencia, estado y última consulta.
 2. **Recolección:** consultar las fuentes periódicamente, respetando sus condiciones de uso, límites y cabeceras HTTP cuando proceda.
-3. **Normalización:** convertir cada elemento a un formato común: fuente, identificador externo, URL canónica, título, descripción disponible, autor, idioma, fecha de publicación y fecha de captura.
+3. **Normalización:** convertir cada elemento a un formato común: fuente, identificador externo, URL canónica, título, descripción disponible, autor, idioma original detectado, idioma declarado por la fuente, fecha de publicación y fecha de captura.
 4. **Deduplicación:** detectar repetidos mediante identificador de origen, URL normalizada y, como apoyo, huella del título. Una misma noticia puede aparecer en varias fuentes; conviene conservar esas relaciones en lugar de perder la procedencia.
 5. **Preclasificación:** aplicar reglas sencillas de términos y categorías para descartar ruido evidente y reducir llamadas innecesarias a la IA.
 6. **Clasificación con IA:** decidir si la entrada es pertinente y asignar una o varias categorías. La respuesta debe ajustarse a un esquema JSON validable.
-7. **Redacción editorial:** generar, cuando proceda, un título y un resumen breve en español, sin añadir hechos que no estén respaldados por el material recibido.
+7. **Redacción editorial y traducción:** conservar siempre título y descripción originales. Generar un título y resumen editorial en español como idioma editorial inicial, sin añadir hechos. Mantener el diseño preparado para almacenar traducciones adicionales por idioma, separadas del original.
 8. **Persistencia:** guardar la noticia normalizada, su procedencia, el resultado de clasificación y los textos generados, junto con los estados y datos necesarios para reanudar procesos fallidos.
 
 La primera fase comprende desde la consulta de fuentes hasta la carga verificable en MySQL/MariaDB. La recolección, el análisis y la persistencia deben poder ejecutarse de forma independiente: un fallo de IA no debe provocar una nueva descarga innecesaria ni perder los datos ya capturados. No se implementarán todavía vistas de usuario, boletines ni envío de correo.
@@ -170,10 +170,12 @@ La IA recibirá únicamente los metadatos y fragmentos necesarios para clasifica
 
 - relevant: booleano.
 - categories: lista de categorías controladas.
-- language: idioma detectado.
+- original_language: idioma original detectado, preferiblemente con código BCP 47.
+- language_evidence: idioma declarado por la fuente, detectado en el texto o inferido con confianza.
 - relevance_reason: explicación breve basada en el contenido recibido.
-- editorial_title_es: título en español, si procede.
+- editorial_title_es: título editorial en español, si procede.
 - summary_es: resumen divulgativo en español, si procede.
+- translations: traducciones adicionales, cada una identificada por idioma destino y vinculada a la versión del contenido original que se tradujo.
 - confidence: confianza estimada, si el proveedor la ofrece de forma útil.
 - needs_review: indicador de revisión humana.
 
@@ -189,7 +191,8 @@ El esquema físico se diseñará después de validar el flujo. Como punto de par
 - **source_fetches:** ejecuciones de consulta, fecha, resultado, estado y errores.
 - **news_items:** noticia normalizada, fechas, título original, descripción disponible, URL y estado de procesamiento.
 - **news_item_sources:** relación entre una noticia consolidada y las apariciones en distintas fuentes.
-- **news_ai_analysis:** proveedor/modelo, versión de prompt, clasificación, JSON recibido, resumen generado, fecha y estado.
+- **news_ai_analysis:** proveedor/modelo, versión de prompt, clasificación, JSON recibido, resumen editorial base, fecha y estado.
+- **news_item_translations:** traducciones de títulos, descripciones breves y resúmenes, asociadas a noticia, idioma destino, contenido de origen, proveedor/modelo y versión. Esta entidad permite añadir idiomas sin sobrescribir el texto original.
 - **news_categories:** catálogo controlado de categorías.
 - **news_item_categories:** relación entre noticias y categorías.
 - Las tablas de preferencias de usuario, suscripciones, ediciones y registro de envíos pertenecen a fases posteriores y **no forman parte del esquema de esta primera versión**.
