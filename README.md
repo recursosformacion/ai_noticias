@@ -17,13 +17,14 @@ Construir un recolector que:
 3. Clasifique las entradas según su interés musical mediante reglas y un proveedor de IA intercambiable.
 4. Genere resúmenes divulgativos en español cuando proceda.
 5. Guarde las noticias, su procedencia y el resultado del análisis en MySQL/MariaDB.
-6. Permita preparar y enviar boletines a usuarios que hayan solicitado expresamente recibirlos.
+6. Deje preparada una base documental reutilizable para fases posteriores, sin implementar todavía funciones de usuario ni boletines.
 
 ## Documentación
 
 - [Propuesta funcional y arquitectura inicial](docs/01-propuesta-funcional.md)
 - [Decisiones y cuestiones pendientes](docs/02-decisiones-pendientes.md)
 - [Inventario inicial de fuentes y canales](docs/03-inventario-fuentes.md)
+- [Criterios editoriales y de clasificación](docs/04-criterios-clasificacion.md)
 
 ## Principios iniciales
 
@@ -31,9 +32,9 @@ Construir un recolector que:
 - Conservar la URL y los metadatos de la fuente original.
 - No confundir el texto original con el resumen generado por IA.
 - No publicar ni redistribuir artículos completos protegidos por derechos de autor.
-- Mantener separados recolección, clasificación, almacenamiento y envío.
-- Diseñar el proveedor de IA y el servicio de correo como componentes sustituibles.
-- No enviar correos sin consentimiento explícito y mecanismo de baja.
+- Mantener separados recolección, clasificación y almacenamiento.
+- Diseñar el proveedor de IA como componente sustituible.
+- Reservar preferencias personales, integración con OSAP y boletines para fases posteriores.
 - No incorporar credenciales, claves API ni datos personales al repositorio.
 
 ## Tecnologías propuestas (no definitivas)
@@ -42,6 +43,6 @@ Construir un recolector que:
 - feedparser para feeds RSS/Atom.
 - MySQL/MariaDB para persistencia.
 - API de IA con adaptador intercambiable (por ejemplo, Gemini o Groq).
-- SMTP para el envío, sujeto a elección y validación del proveedor.
+
 
 Las decisiones definitivas se documentarán antes de iniciar la implementación.
