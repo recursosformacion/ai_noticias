@@ -4,7 +4,7 @@
 
 ## 1. Objetivo del paquete
 
-Recopilar automáticamente noticias y novedades relacionadas con la música, con especial interés inicial en música clásica, coral, musicología, partituras, archivos y patrimonio musical. Las entradas relevantes se conservarán en MySQL/MariaDB y podrán utilizarse posteriormente para elaborar un boletín en español.
+Recopilar automáticamente noticias y novedades de **todos los ámbitos musicales**, tanto de interés general como especializado. El sistema no limitará la recolección a un único género o comunidad: cubrirá, entre otros, música clásica, coral, jazz, rock, pop, música urbana, electrónica, música tradicional, industria musical, educación, musicología, partituras y patrimonio. Cada usuario podrá seleccionar los ámbitos y temas que desea seguir. Las entradas relevantes se conservarán en MySQL/MariaDB y podrán utilizarse posteriormente para elaborar un boletín en español.
 
 El sistema debe mantener la trazabilidad hasta la fuente original y distinguir claramente entre los datos publicados por la fuente y el texto redactado por la IA.
 
@@ -63,7 +63,33 @@ Fuentes a investigar:
 
 Conviene distinguir noticias divulgativas de artículos académicos. Estos últimos pueden requerir metadatos bibliográficos específicos y no siempre son adecuados para un boletín diario.
 
-## 4. Clasificación temática inicial
+## 4. Modelo editorial: cobertura general y especializada
+
+La recolección tendrá una cobertura amplia y común para todos los usuarios. Se recogerán noticias de los ámbitos musicales generales y de los especializados; no se crearán recolectores separados ni se limitará la consulta de fuentes en función de las preferencias individuales.
+
+La separación entre «general» y «especializado» será una **clasificación editorial**, no dos sistemas aislados:
+
+- **Ámbito general:** actualidad de la música en conjunto, industria, mercado, tecnología, plataformas, derechos, festivales, giras y noticias de interés transversal.
+- **Ámbitos especializados:** música clásica, coral y vocal, jazz, rock, pop, electrónica, músicas tradicionales, musicología, educación, partituras, instrumentos, interpretación, patrimonio y otros campos que se incorporen al catálogo.
+
+Una noticia podrá pertenecer a más de un ámbito. Por ejemplo, una noticia sobre digitalización de manuscritos de una compositora puede ser a la vez patrimonio, musicología y música clásica.
+
+### Preferencias del usuario
+
+Cada usuario elegirá qué noticias desea seguir. La selección se basará principalmente en temas/categorías y podrá incluir el ámbito general completo o combinaciones de especialidades. Las preferencias afectarán a la consulta y presentación de noticias para ese usuario —incluido el futuro boletín—, pero **no reducirán la recolección común**.
+
+Esto permite:
+- Evitar que una noticia relevante no se recoja porque ningún usuario la había seleccionado todavía.
+- No consultar repetidamente la misma fuente para cada suscriptor.
+- Permitir que un usuario cambie sus preferencias sin perder el histórico.
+- Preparar boletines distintos según los intereses de cada persona.
+- Incorporar nuevos temas sin rediseñar el sistema de recolección.
+
+La base de datos deberá distinguir el catálogo global de categorías de las preferencias particulares. Una noticia se clasifica una sola vez en el corpus común; después se determina a qué usuarios interesa según sus selecciones. La relación entre categorías y noticias será de muchos a muchos, y la relación entre usuarios y categorías preferidas también.
+
+Las fuentes podrán tener etiquetas temáticas orientativas, pero no serán la única forma de clasificar: una misma fuente puede publicar contenidos de varias áreas y la clasificación final debe hacerse sobre cada noticia.
+
+## 5. Clasificación temática inicial
 
 Categorías candidatas:
 
@@ -79,7 +105,7 @@ Categorías candidatas:
 
 La clasificación deberá permitir varias categorías por noticia y conservar una explicación breve de por qué se considera pertinente. Las categorías definitivas y sus límites se acordarán con ejemplos reales.
 
-## 5. Uso de IA
+## 6. Uso de IA
 
 El sistema no dependerá directamente de un proveedor concreto. Se definirá una interfaz común para poder utilizar Gemini, Groq u otro servicio compatible.
 
@@ -100,7 +126,7 @@ La aplicación validará el JSON y los campos. Una respuesta inválida, incomple
 
 La IA no debe inventar fechas, lugares, participantes ni resultados. Si el fragmento no contiene información suficiente, debe indicarlo y solicitar revisión, no completar los huecos mediante suposiciones.
 
-## 6. Persistencia MySQL/MariaDB: entidades conceptuales
+## 7. Persistencia MySQL/MariaDB: entidades conceptuales
 
 El esquema físico se diseñará después de validar el flujo. Como punto de partida se identifican estas entidades:
 
@@ -111,14 +137,15 @@ El esquema físico se diseñará después de validar el flujo. Como punto de par
 - **news_ai_analysis:** proveedor/modelo, versión de prompt, clasificación, JSON recibido, resumen generado, fecha y estado.
 - **news_categories:** catálogo controlado de categorías.
 - **news_item_categories:** relación entre noticias y categorías.
+- **user_news_preferences** (nombre conceptual): relación entre el usuario OSAP y los temas/categorías que desea seguir, con estado y fechas de vigencia. No se presupone todavía el nombre definitivo de la tabla ni el esquema de autenticación.
 - **newsletter_editions:** ediciones del boletín y su estado.
 - **newsletter_edition_items:** noticias incluidas en cada edición y orden de presentación.
 - **newsletter_subscriptions:** suscripciones, consentimiento, fecha de alta/baja y estado.
 - **newsletter_delivery_log:** registro de envíos, destinatario, edición, fecha y resultado, con retención limitada.
 
-La vinculación de suscriptores con cuentas de OSAP deberá hacerse mediante el identificador de usuario acordado con el sistema de autenticación, sin duplicar innecesariamente datos personales. No se presupone todavía el nombre ni la estructura de las tablas de usuarios existentes.
+La vinculación de preferencias y suscripciones con cuentas de OSAP deberá hacerse mediante el identificador de usuario acordado con el sistema de autenticación, sin duplicar innecesariamente datos personales. No se presupone todavía el nombre ni la estructura de las tablas de usuarios existentes.
 
-## 7. Boletín por correo
+## 8. Boletín por correo
 
 El envío será una fase posterior a la recolección y clasificación. El sistema deberá:
 
@@ -131,7 +158,7 @@ El envío será una fase posterior a la recolección y clasificación. El sistem
 
 Se estudiarán el SMTP del alojamiento y servicios externos como Brevo. Las cuotas gratuitas, límites y condiciones comerciales pueden cambiar y deberán verificarse antes de elegir proveedor. No se fijará una cuota concreta en el diseño.
 
-## 8. Derechos, atribución y uso responsable
+## 9. Derechos, atribución y uso responsable
 
 - Priorizar feeds y APIs oficiales y respetar sus condiciones de uso.
 - Guardar título, metadatos, fragmentos suministrados por el feed, enlace y atribución de la fuente.
@@ -140,7 +167,7 @@ Se estudiarán el SMTP del alojamiento y servicios externos como Brevo. Las cuot
 - Mostrar claramente el medio o institución de origen y enlazar a la noticia original.
 - Respetar las condiciones de cada API, robots/limitaciones aplicables y las solicitudes de retirada cuando proceda.
 
-## 9. Ejecución y operación
+## 10. Ejecución y operación
 
 Se prevé una ejecución programada (por ejemplo, diaria al inicio), pero la frecuencia se configurará por fuente. Las tareas deberán ser idempotentes y reanudables:
 
@@ -152,7 +179,7 @@ Se prevé una ejecución programada (por ejemplo, diaria al inicio), pero la fre
 
 No se ha decidido aún si la programación se realizará mediante cron, el programador del sistema o un worker persistente propio.
 
-## 10. Fases propuestas
+## 11. Fases propuestas
 
 1. Inventariar y verificar fuentes RSS/APIs.
 2. Acordar categorías, criterios de inclusión y exclusión con ejemplos.
@@ -160,7 +187,7 @@ No se ha decidido aún si la programación se realizará mediante cron, el progr
 4. Construir y probar la recolección y deduplicación sin IA.
 5. Incorporar clasificación y resumen mediante IA intercambiable.
 6. Añadir revisión y gestión editorial.
-7. Integrar suscripciones y boletines.
+7. Integrar preferencias personales, suscripciones y boletines.
 8. Programar ejecución, observabilidad, recuperación y mantenimiento.
 
 No se debe iniciar el envío de correos ni una recolección masiva antes de validar las fases anteriores.
