@@ -185,7 +185,7 @@ La IA no debe inventar fechas, lugares, participantes ni resultados. Si el fragm
 
 ## 7. Persistencia MySQL/MariaDB: modelo conceptual
 
-El modelo se ha desarrollado en [Modelo conceptual de persistencia](08-modelo-conceptual-persistencia.md). Se distinguen publisher/editor, canal técnico, ejecución de captura, observación recibida, publicación concreta y noticia consolidada. Las publicaciones oficiales en distintos idiomas permanecen separadas y pueden relacionarse con una misma noticia; una publicación puede descubrirse mediante varios canales.
+La base de datos de destino se denomina **`osap_noticias`**. El nombre identifica el esquema MySQL/MariaDB del proyecto; los parámetros de conexión y las credenciales se proporcionarán mediante configuración externa y nunca se incluirán en Git.\n\nEl modelo se ha desarrollado en [Modelo conceptual de persistencia](08-modelo-conceptual-persistencia.md). Se distinguen publisher/editor, canal técnico, ejecución de captura, observación recibida, publicación concreta y noticia consolidada. Las publicaciones oficiales en distintos idiomas permanecen separadas y pueden relacionarse con una misma noticia; una publicación puede descubrirse mediante varios canales.
 
 El modelo incluye análisis versionados, taxonomía y asignaciones, textos editoriales en español y traducciones preparadas para una fase posterior. Los estados de captura, análisis y traducción son independientes. No se incorporan usuarios, preferencias ni boletines.
 
