@@ -328,6 +328,9 @@ def probe_candidate_channels(connection, source_id: int | None = None) -> list[d
                 raise RuntimeError("Respuesta 304 inesperada en una prueba sin validadores.")
             if len(body) > 8 * 1024 * 1024:
                 raise RuntimeError("El feed supera el límite de 8 MiB.")
+            final_host = (urlsplit(final_url).hostname or "").lower()
+            if final_host != expected_domain and not final_host.endswith("." + expected_domain):
+                raise RuntimeError("La redirección sale del dominio autorizado.")
             metadata, items = parse_feed(body, base_url=final_url)
             results.append({
                 "source_id": channel["id"],
