@@ -170,17 +170,17 @@ Los estados se acompañan de marcas temporales, intentos y errores. Una publicac
 
 ## 5. Identidad, deduplicación y versionado
 
-La identidad se resuelve en niveles:
+La identidad común de una noticia se calcula exclusivamente mediante SHA-256 de la descripción normalizada. La normalización decodifica entidades HTML, elimina etiquetas y bloques `script`/`style`, normaliza Unicode, elimina diacríticos, convierte a minúsculas, sustituye puntuación por espacios y colapsa espacios consecutivos.
 
-1. Observación: canal + GUID/ID externo, si es estable.
-2. Publicación: publisher + identificador editorial, DOI o URL canónica, según disponibilidad.
-3. Noticia: agrupación de publicaciones que corresponden al mismo hecho.
+El título, la fecha, el GUID, la URL y la fuente se conservan como metadatos originales, pero no forman parte de la huella. Las observaciones se mantienen separadas por canal; las publicaciones de distintos editores que compartan la misma huella se enlazan a un único `news_item`, conservando su publisher, URL, título, idioma y texto originales.
 
-Una URL coincidente es evidencia fuerte, pero debe normalizarse con cuidado: no se eliminan parámetros que formen parte de la identidad real. Una similitud de título/fecha solo genera candidatos. Los casos dudosos quedan separados o pendientes de revisión.
+No se fusionan textos por similitud semántica. Si cambia la descripción normalizada, cambia la identidad. Si falta la descripción o queda vacía tras normalizarla, la entrada se marca como error y no se inventa una clave alternativa.
+
+Este criterio considera que descripciones normalizadas idénticas representan la misma noticia. Las descripciones genéricas o reutilizadas por una fuente pueden provocar consolidaciones incorrectas; deberán detectarse mediante revisión de datos, sin introducir título, fecha o URL en la clave.
 
 Se conservarán:
 - La primera captura y la última observación.
-- Los cambios sustanciales del título, descripción, URL, idioma o fechas.
+- Los cambios sustanciales de metadatos y descripción.
 - Los análisis previos y sus versiones de modelo/prompt/taxonomía.
 - El texto editorial de cada versión y las traducciones vinculadas a su texto de origen.
 - La relación entre ediciones oficiales en diferentes idiomas.
