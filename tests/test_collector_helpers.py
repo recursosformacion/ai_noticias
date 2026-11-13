@@ -1,7 +1,11 @@
 import unittest
-from datetime import datetime
 
-from app.collector import canonical_url, _observation_identity, _identity_text
+from app.collector import (
+    canonical_url,
+    _observation_identity,
+    _identity_text,
+    _normalized_description,
+)
 
 
 class CanonicalUrlTests(unittest.TestCase):
@@ -16,24 +20,37 @@ class CanonicalUrlTests(unittest.TestCase):
 
 
 class ObservationIdentityTests(unittest.TestCase):
-    def test_guid_and_url_changes_do_not_change_identity(self):
-        first = {"external_id": "guid-A", "title": "L'Été — concert!", "published_at": datetime(2026, 5, 2, 10, 30), "url": "https://a.example/story"}
-        second = {"external_id": "guid-B", "title": "L Ete concert", "published_at": datetime(2026, 5, 2, 10, 30), "url": "https://b.example/other"}
+    def test_description_alone_defines_identity(self):
+        first = {
+            "title": "Primera noticia",
+            "description": "La Orquesta anuncia una nueva temporada de conciertos.",
+            "published_raw": "02 May 2026",
+            "url": "https://a.example/story",
+            "external_id": "guid-A",
+        }
+        second = {
+            "title": "Otro titular",
+            "description": "La Orquesta anuncia una nueva temporada de conciertos.",
+            "published_raw": "03 May 2026",
+            "url": "https://b.example/other",
+            "external_id": "guid-B",
+        }
         self.assertEqual(_observation_identity(first), _observation_identity(second))
 
-    def test_title_and_date_define_identity(self):
-        base = {"title": "Actualité musicale", "published_raw": "02 May 2026"}
-        self.assertNotEqual(_observation_identity(base), _observation_identity({"title": "Autre actualité", "published_raw": "02 May 2026"}))
-        self.assertNotEqual(_observation_identity(base), _observation_identity({"title": "Actualité musicale", "published_raw": "03 May 2026"}))
+    def test_normalizes_html_entities_accents_punctuation_and_spaces(self):
+        first = "  <p>L'Été — MUSIQUE!</p> &amp; concerts "
+        second = "L Ete musique et concerts"
+        self.assertEqual(_normalized_description(first), _normalized_description(second))
+        self.assertEqual(_observation_identity({"description": first}), _observation_identity({"description": second}))
 
-    def test_normalizes_accents_punctuation_and_spaces(self):
-        self.assertEqual(_identity_text("  L'Été — MUSIQUE! "), "l ete musique")
+    def test_removes_script_and_style_content(self):
+        self.assertEqual(_normalized_description("Texto <script>alert('x')</script> final"), "texto final")
 
-    def test_missing_title_or_date_is_rejected(self):
+    def test_missing_or_empty_description_is_rejected(self):
         with self.assertRaises(ValueError):
-            _observation_identity({"title": "Sans date"})
+            _observation_identity({"title": "Sin descripción"})
         with self.assertRaises(ValueError):
-            _observation_identity({"published_raw": "02 May 2026"})
+            _observation_identity({"description": "<p> &nbsp; </p>"})
 
 
 if __name__ == "__main__":
