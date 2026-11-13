@@ -285,3 +285,39 @@ Las respuestas de RSS/Atom se han localizado, pero el visor web empleado no inte
 4. Probar Google News para identificar editor original y resolver URL.
 5. Preparar una muestra etiquetada para medir relevancia, tipos, idiomas y duplicados.
 6. Revisar las condiciones de cada fuente antes de decidir retención y tratamiento IA.
+
+
+## 10. Revisión de condiciones de uso: decisión operativa (13-11-2026)
+
+Esta sección prevalece sobre las propuestas preliminares de las secciones 6 y 7 cuando exista contradicción. La disponibilidad pública de RSS solo acredita que el editor ofrece un mecanismo de suscripción; no equivale a una licencia para almacenar de forma permanente, reutilizar, traducir o enviar el contenido a un servicio de IA.
+
+| Canal | Lo que dicen las condiciones oficiales | Decisión para esta implementación |
+|---|---|---|
+| LOC – In the Muse | La Library of Congress permite reutilizar el texto de los blogs escritos por personal propio, con crédito al autor y a la institución. Algunas imágenes pueden estar restringidas; los artículos de autores invitados deben revisarse por separado. | **Primer candidato para prueba**, limitando la captura al contenido textual del feed, guardando autor, URL, atribución y fecha. No reutilizar imágenes. Revisar cada pieza si el autor no es personal LOC. |
+| BnF – Bibliographie nationale / Partitions | Las metadatos descriptivos de la BnF están bajo Licence Ouverte, con obligación de conservar fuente y fecha de recuperación. La sección Partitions contiene registros bibliográficos de música impresa. | **Candidato para prueba independiente**, como novedad bibliográfica, no noticia. Guardar fuente BnF y fecha de recuperación. La licencia de metadatos no se extiende a imágenes, cubiertas ni documentos enlazados. |
+| Scherzo | El aviso legal exige autorización escrita previa para reproducción, uso o explotación de los contenidos, cualquiera que sea la finalidad. | **No activar** para captura persistente o análisis IA sin autorización escrita. El enlace directo a la página original sí está expresamente permitido. |
+| Beckmesser | El aviso legal reserva todos los derechos y prohíbe reproducción, almacenamiento permanente y difusión con finalidad pública o comercial sin consentimiento previo expreso y escrito. | **No activar** para la ingesta prevista sin autorización escrita. |
+| Bachtrack – News / Articles / Reviews | La documentación ofrece RSS oficiales, pero las condiciones de uso (actualizadas el 23-03-2026) restringen el uso ordinario a fines personales y privados. Para robots solo permiten rastreo/lectura/almacenamiento/indexación con el fin de mostrar resultados de búsqueda, bajo límites (máximo 100 palabras por URL, enlace destacado, ritmo no excesivo, User-Agent identificable y respeto de robots.txt). Prohíben expresamente otros usos automatizados, incluido entrenamiento de IA y extracción de contenido. | **No activar en el recolector ni enviar a IA** con el diseño actual. El RSS documentado no anula estas restricciones. Requerir permiso escrito que cubra captura, persistencia y análisis automatizado. |
+| Musicology Now | La publicación identifica a los autores como responsables de las opiniones y contenidos; la página informativa y el RSS no ofrecen una licencia general de reutilización de los artículos. | **Pendiente de autorización/aclaración** antes de persistir textos o enviarlos a IA. No inferir licencia abierta por su carácter académico o divulgativo. |
+| Music Business Worldwide | Sus condiciones limitan el uso a fines personales no comerciales y restringen reproducción, traducción y redistribución sin autorización. | **No activar** sin permiso escrito. |
+| NPR Music | Las condiciones limitan el uso del feed y prohíben utilizar sus contenidos para construir o entrenar sistemas de IA sin consentimiento escrito. | **No activar** en el flujo automatizado sin permiso escrito. |
+
+Fuentes oficiales consultadas:
+- LOC, reutilización de blogs: https://blogs.loc.gov/about/
+- LOC, guía de derechos de los materiales del sitio: https://www.loc.gov/legal/security-copyright-and-privacy/understanding-copyright/
+- BnF, condiciones de reutilización: https://www.bnf.fr/fr/conditions-de-reutilisations-des-donnees-de-la-bnf
+- BnF, contenido y secciones de la Bibliographie nationale: https://bibliographienationale.bnf.fr/content/bibliographie
+- Scherzo, aviso legal: https://scherzo.es/aviso-legal/
+- Beckmesser, aviso legal: https://www.beckmesser.com/aviso-legal/
+- Bachtrack, RSS: https://bachtrack.com/fr_FR/handler/documentation/view/ug-rss-feeds
+- Bachtrack, condiciones de uso (23-03-2026): https://bachtrack.com/fr_FR/conditions-of-use
+- Musicology Now, información editorial: https://musicologynow.org/about-musicology-now/
+
+### Orden de trabajo corregido
+
+1. Probar primero **LOC – In the Muse**, aplicando la atribución indicada y sin reutilizar imágenes. Antes de pasar contenido a IA, comprobar si cada entrada es de personal LOC o de autor invitado.
+2. Probar **BnF – Partitions** como flujo separado de novedades bibliográficas y validar que el parser interpreta el RSS y que se conservan fuente y fecha de recuperación.
+3. Mantener los demás canales en PAUSED hasta obtener permisos o aclaraciones suficientes. No activar Scherzo, Beckmesser, Bachtrack, Musicology Now, MBW ni NPR solo porque sus RSS respondan.
+4. Una prueba técnica de RSS debe limitarse a comprobar conectividad, estructura y campos necesarios; no debe convertirse en almacenamiento de textos editoriales sujetos a restricciones.
+
+La primera captura de LOC debe ser pequeña y verificable. La autorización de reutilización de los textos de blogs del personal no debe extenderse automáticamente a colaboradores invitados, fotografías, material enlazado ni contenidos de terceros.
