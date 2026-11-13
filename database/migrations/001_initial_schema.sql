@@ -13,6 +13,13 @@ USE osap_noticias;
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';
 
+CREATE TABLE IF NOT EXISTS schema_migrations (
+  version VARCHAR(100) NOT NULL,
+  applied_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  description VARCHAR(255) NOT NULL,
+  PRIMARY KEY (version)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS publishers (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
@@ -322,5 +329,9 @@ CREATE TABLE IF NOT EXISTS editorial_translations (
   KEY ix_editorial_translations_status_language (status, target_language_code),
   CONSTRAINT fk_editorial_translations_text FOREIGN KEY (editorial_text_id) REFERENCES editorial_texts(id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO schema_migrations (version, description)
+VALUES ('001_initial_schema', 'Esquema inicial de captura, publicaciones, análisis y textos editoriales')
+ON DUPLICATE KEY UPDATE description = VALUES(description);
 
 -- Fin de la migración inicial. Los catálogos semilla se incorporarán en una migración separada.
