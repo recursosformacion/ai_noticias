@@ -106,16 +106,6 @@ def _get_or_create_publication(cursor, channel, item, now, existing_publication_
             (existing_publication_id,),
         )
         publication = cursor.fetchone()
-    if publication is None and url_hash:
-        # A URL can be a shared search/results page. Only reuse a publication
-        # when both its canonical URL and title match (conservative deduplication).
-        cursor.execute(
-            """SELECT id, news_item_id FROM news_publications
-            WHERE url_sha256=%s AND title_original=%s ORDER BY id LIMIT 1 FOR UPDATE""",
-            (url_hash, item["title"]),
-        )
-        publication = cursor.fetchone()
-
     if publication:
         pub_id = publication["id"]
         news_id = publication["news_item_id"]
