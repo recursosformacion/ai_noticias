@@ -64,4 +64,6 @@ Antes de activar una fuente se puede comprobar la estructura del feed de los dos
 py -3 -m app.cli probe
 ```
 
+En Windows también se puede iniciar con `probar_fuentes.bat`.
+
 El comando solo consulta LOC – In the Muse y BnF – Partitions, muestra el número de elementos y la disponibilidad de campos (URL, autor, fecha e identificador), y **no guarda noticias ni crea ejecuciones en la base de datos**. Admite `--source-id ID` para limitar la consulta a uno de esos canales. No es un mecanismo para probar fuentes con permisos pendientes.
