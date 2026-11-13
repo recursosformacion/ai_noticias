@@ -107,6 +107,10 @@ def _get_or_create_publication(cursor, channel, item, now, existing_publication_
             )
             news_id = cursor.lastrowid
             cursor.execute("UPDATE news_publications SET news_item_id=%s WHERE id=%s", (news_id, pub_id))
+        cursor.execute(
+            "UPDATE news_items SET primary_publication_id=COALESCE(primary_publication_id,%s) WHERE id=%s",
+            (pub_id, news_id),
+        )
         return pub_id, news_id
 
     cursor.execute(
@@ -127,10 +131,16 @@ def _get_or_create_publication(cursor, channel, item, now, existing_publication_
             item["updated_raw"], item["language"], now, now,
         ),
     )
-    return cursor.lastrowid, news_id
+    pub_id = cursor.lastrowid
+    cursor.execute("UPDATE news_items SET primary_publication_id=%s WHERE id=%s", (pub_id, news_id))
+    return pub_id, news_id
 
 
 def _persist_item(cursor, channel, run_id, item, now):
+    if item["url"] and len(item["url"]) > 2048:
+        raise ValueError("La URL del elemento supera los 2048 caracteres admitidos.")
+    if item["external_id"] and len(item["external_id"]) > 1000:
+        raise ValueError("El identificador externo supera los 1000 caracteres admitidos.")
     external_id = item["external_id"] or item["url"] or (
         item["title"] + "|" + (item["published_raw"] or "")
     )
@@ -223,6 +233,7 @@ def ingest_channel(connection, channel: dict) -> dict:
     connection.commit()
 
     counts = {"received": 0, "new": 0, "known": 0, "updated": 0, "error": 0}
+    item_errors = []
     status = "SUCCESS"
     http_status = None
     final_url = channel["url"]
@@ -243,16 +254,18 @@ def ingest_channel(connection, channel: dict) -> dict:
                         with transaction(connection):
                             result = _persist_item(cursor, channel, run_id, item, _utcnow())
                     counts[result] += 1
-                except Exception:
+                except Exception as item_exc:
                     connection.rollback()
                     counts["error"] += 1
+                    if len(item_errors) < 10:
+                        item_errors.append(str(item_exc)[:500])
             if counts["error"]:
                 status = "PARTIAL" if counts["new"] + counts["known"] + counts["updated"] else "FAILED"
     except Exception as exc:
         status = "FAILED"
         error_message = str(exc)[:6000]
     else:
-        error_message = None
+        error_message = "; ".join(item_errors)[:6000] if item_errors else None
 
     finished = _utcnow()
     etag = headers.get("ETag") or headers.get("Etag")
@@ -261,10 +274,12 @@ def ingest_channel(connection, channel: dict) -> dict:
         cursor.execute(
             """UPDATE fetch_runs SET finished_at=%s, final_url=%s, http_status=%s,
             result_status=%s, items_received=%s, items_new=%s, items_known=%s,
-            items_error=%s, duration_ms=%s, error_message=%s WHERE id=%s""",
+            items_error=%s, duration_ms=%s, error_code=%s, error_message=%s WHERE id=%s""",
             (finished, final_url, http_status, status, counts["received"],
-             counts["new"] + counts["updated"], counts["known"], counts["error"],
-             int((time.monotonic() - started_clock) * 1000), error_message, run_id),
+             counts["new"], counts["known"] + counts["updated"], counts["error"],
+             int((time.monotonic() - started_clock) * 1000),
+             "ITEM_ERRORS" if item_errors else ("FETCH_ERROR" if status == "FAILED" else None),
+             error_message, run_id),
         )
         cursor.execute(
             """UPDATE source_channels SET last_checked_at=%s,
