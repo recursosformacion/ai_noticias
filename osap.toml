@@ -1,7 +1,7 @@
 [db]
 port = 3306
 host = "127.0.0.1"
-name = "osap_api"
-user = "osap2027"
-password = "2027osapdb"
-
+name = "osap_noticias"
+user = ""
+password = ""
+# La contraseña debe suministrarse fuera de Git mediante el entorno del servicio.
