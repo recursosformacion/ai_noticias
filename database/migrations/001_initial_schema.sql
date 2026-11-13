@@ -1,6 +1,7 @@
 -- ai_noticias — migración inicial de esquema
 -- Destino: osap_noticias
--- Compatibilidad objetivo: MySQL 8.0.16+ (InnoDB, utf8mb4).
+-- Motor de desarrollo detectado: MariaDB 10.4.32 (InnoDB, utf8mb4).
+-- Compatibilidad revisada a nivel de sintaxis; pendiente de ejecución real.
 -- NO ejecutar en producción sin backup, verificación de versión y revisión previa.
 -- La conexión y los permisos de creación de base/esquema se gestionan fuera de este archivo.
 
