@@ -55,7 +55,8 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 
 ## Base de datos e integración
 
-- [x] Nombre acordado para la base de datos MySQL/MariaDB: `osap_noticias`.\n- [ ] Confirmar versión y configuración objetivo de MySQL/MariaDB.
+- [x] Nombre acordado para la base de datos MySQL/MariaDB: `osap_noticias`.
+- [ ] Confirmar versión y configuración objetivo de MySQL/MariaDB.
 - [ ] Definir conexión y gestión de credenciales mediante configuración externa, nunca en Git.
 - [ ] Acordar retención de registros de captura, errores, análisis y envíos.
 - [ ] Definir si el paquete expondrá API propia o será consumido directamente por otro servicio.
