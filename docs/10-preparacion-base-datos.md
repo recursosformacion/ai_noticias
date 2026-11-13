@@ -2,13 +2,19 @@
 
 **Base prevista:** `osap_noticias`.
 
-## Configuración encontrada
+## Configuración local
 
-El repositorio incluye `osap.toml`, siguiendo la estructura de configuración de OSAP. La configuración consultada apunta a una conexión local MySQL (`127.0.0.1:3306)) y a la base `osap_api`, no a `osap_noticias`. Por tanto, esa conexión no debe reutilizarse automáticamente: hay que comprobar permisos y separar la cuenta de servicio de noticias de la cuenta de OSAP API.
+`osap.toml` es configuración de desarrollo/local y no debe distribuirse con el repositorio público.
 
-La contraseña no se documenta aquí. El fichero versionado se ha saneado y el valor se ha vaciado; se ha añadido `.gitignore` para evitar volver a incorporar `osap.toml`, ficheros `.env` y datos locales. La plantilla pública es `osap.example.toml`.
+- Está incluido en `.gitignore`.
+- Se ha eliminado del seguimiento de Git; el repositorio ya no contiene ese fichero.
+- La configuración local del equipo de desarrollo debe conservarse fuera del repositorio.
+- La plantilla pública es `osap.example.toml`, sin credenciales.
+- La base configurada para este proyecto debe ser `osap_noticias`, no `osap_api`.
 
-**Importante:** el repositorio es público y Git conserva el historial de commits. Vaciar el valor en el último commit no elimina el secreto de commits anteriores. La contraseña anterior debe considerarse expuesta y rotarse en el servidor MySQL. No se ha intentado conectar con esa cuenta ni crear la base de datos.
+El fichero local puede contener credenciales de desarrollo. No se copian sus valores a documentación, commits ni registros. El uso de esa conexión queda limitado al entorno de desarrollo y a la base prevista para este proyecto; no se debe ejecutar ninguna migración contra una base de producción ni contra `osap_api`.
+
+**Historial Git:** el fichero `osap.toml` estuvo versionado anteriormente. Aunque ya no está en la rama actual, sus versiones históricas pueden seguir accesibles en el historial del repositorio. Si alguna credencial histórica deja de ser válida o se considera expuesta, debe rotarse. No se ha reescrito el historial Git.
 
 ## Preparación disponible
 
@@ -19,7 +25,7 @@ La contraseña no se documenta aquí. El fichero versionado se ha saneado y el v
 
 ## Compatibilidad y ejecución
 
-La migración 001 está redactada para **MySQL 8.0.16 o posterior**. No se declara todavía compatibilidad validada con MariaDB. Antes de ejecutarla se debe comprobar la versión real del servidor y revisar los permisos de la cuenta específica de ai_noticias.
+La migración 001 está redactada para **MySQL 8.0.16 o posterior**. No se declara todavía compatibilidad validada con MariaDB. Antes de ejecutarla se debe comprobar la versión del servidor y que la cuenta de desarrollo tenga permisos limitados a la base `osap_noticias`.
 
 Las migraciones se aplican en orden y el ejecutor consulta `schema_migrations` antes de cada versión. Las tablas de la primera migración usan `IF NOT EXISTS`; la referencia a publicación principal se valida en la aplicación para evitar una dependencia circular. El catálogo de tipos también usa una inserción idempotente.
 
