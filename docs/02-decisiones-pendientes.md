@@ -20,7 +20,7 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 - [x] Definir cobertura general y especializada: el recolector abarcará todos los ámbitos musicales; cada usuario elegirá los temas que desea seguir.
 - [x] Preparar una primera taxonomía jerárquica de ámbitos generales y especialidades (propuesta en la sección 5 de la propuesta funcional); pendiente validarla con noticias reales.
 - [ ] Validar la selección jerárquica de temas: permitir seguir ámbitos completos o subcategorías; decidir si también se podrán excluir temas concretos.
-- [ ] Decidir si las preferencias se aplican solo al boletín o también a una futura vista personal de noticias.
+- [x] Definir que las preferencias alimentan una vista personal de noticias y pueden personalizar el boletín; la suscripción por correo tendrá consentimiento independiente.
 - [ ] Decidir si las noticias se publican automáticamente o pasan por revisión.
 - [ ] Definir el tratamiento de noticias repetidas, actualizaciones y artículos sindicados.
 - [ ] Decidir la longitud y el tono del resumen en español.
