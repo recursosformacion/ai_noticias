@@ -162,3 +162,11 @@ La implementación no modifica ni borra registros existentes y no inicia captura
 El comando `py -3 -m app.cli probe` permite comprobar los feeds de LOC – In the Muse y BnF – Partitions antes de activar la ingesta. Consulta únicamente las URLs exactas incluidas en una lista permitida y comprueba que las redirecciones permanezcan dentro del dominio institucional esperado. Resume el número de elementos y la presencia de URL, autor, fecha e identificador, sin imprimir títulos ni descripciones.
 
 El sondeo no inserta ni actualiza filas, no crea `fetch_runs`, no guarda el cuerpo XML y no cambia el estado PAUSED de los canales. Se puede limitar con `--source-id ID`. No debe utilizarse para probar canales cuya política de uso sigue pendiente o prohíbe el uso automatizado previsto.
+
+## 8. Tipo de contenido predeterminado por canal
+
+Un canal puede declarar un tipo de contenido predeterminado como pista de clasificación. La migración 004 incorpora `source_channels.default_content_type_id`, relacionado con `content_types`.
+
+El canal **Bibliographie nationale - Partitions (BnF, ID 6)** queda configurado con `BIBLIO` (Novedad bibliográfica). El recolector carga esta configuración al seleccionar los canales activos. La pista no equivale a una clasificación editorial validada: no se asigna automáticamente a `editorial_analyses`, no ejecuta IA y no convierte por sí sola una observación en noticia. Cuando se implemente el análisis, deberá utilizarse como valor inicial contextual y validarse frente al contenido real.
+
+La separación permite que BnF se procese como fuente de registros bibliográficos, sin mezclar sus novedades con noticias periodísticas. Otros canales pueden dejar el valor nulo y clasificarse sin sesgo por tipo de fuente.
