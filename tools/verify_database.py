@@ -14,7 +14,7 @@ EXPECTED_TABLES = {
     "editorial_analyses", "news_item_categories", "editorial_texts",
     "editorial_translations",
 }
-EXPECTED_MIGRATIONS = {"001_initial_schema", "002_seed_content_types"}
+EXPECTED_MIGRATIONS = {"001_initial_schema", "002_seed_content_types", "003_initial_source_candidates"}
 EXPECTED_CONTENT_TYPES = {
     "NEWS", "EVENT", "RELEASE", "RESEARCH", "BIBLIO",
     "COLLECTION", "INTERVIEW", "OPINION", "OTHER", "REVIEW",
@@ -37,6 +37,9 @@ def main() -> int:
             content_types = set(filter(None, client.run(
                 "SELECT code FROM content_types ORDER BY code"
             ).splitlines()))
+            source_counts = client.run(
+                "SELECT status, COUNT(*) FROM source_channels GROUP BY status ORDER BY status"
+            )
             fk_count = int(client.run(
                 "SELECT COUNT(*) FROM information_schema.KEY_COLUMN_USAGE "
                 "WHERE TABLE_SCHEMA = DATABASE() AND REFERENCED_TABLE_NAME IS NOT NULL"
@@ -57,6 +60,7 @@ def main() -> int:
         print(f"Tablas InnoDB: {engine_count}")
         print(f"Migraciones registradas: {', '.join(sorted(migrations)) or 'ninguna'}")
         print(f"Tipos de contenido: {len(content_types)} (esperados: {len(EXPECTED_CONTENT_TYPES)})")
+        print("Canales por estado: " + (source_counts.replace("\\n", "; ") or "ninguno"))
 
         if missing_tables:
             print("FALTAN TABLAS: " + ", ".join(sorted(missing_tables)))
