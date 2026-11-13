@@ -45,7 +45,7 @@ Construir un recolector que:
 
 - Python.
 - feedparser para feeds RSS/Atom.
-- MySQL/MariaDB para persistencia.
+- MySQL/MariaDB para persistencia; nombre acordado de la base de datos: `osap_noticias`.
 - API de IA con adaptador intercambiable (por ejemplo, Gemini o Groq).
 
 
