@@ -104,6 +104,19 @@ Fuentes oficiales:
 - https://doaj.org/docs/oai-pmh/
 - https://doaj.org/docs/journal-csv
 
+### 1.4 American Musicological Society (AMS) y Musicology Now
+
+Se han localizado dos vías especialmente relevantes para el ámbito musicológico:
+
+- **Musicology Now**, publicación digital de la American Musicological Society orientada al público general, con artículos breves que acercan investigación e ideas sobre música. Su RSS está enlazado desde la propia web: https://musicologynow.org/feed
+- **AMS – Musicology in the news**, feed que la AMS describe como noticias de interés para la comunidad musicológica. La página institucional lo sigue enumerando, pero el endpoint enlazado (https://www.ams-net.org/feeds/news/index.php) devolvió un 404 al comprobarlo. Se registra como canal anunciado pero actualmente no verificado; no debe activarse hasta localizar el endpoint vigente.
+
+La AMS también enumera feeds de libros nuevos en musicología, tesis doctorales y anuncios académicos. Son útiles para descubrimiento de publicaciones y actividad académica, pero deben clasificarse como tales y no mezclarse automáticamente con noticias de actualidad.
+
+Fuentes:
+- https://www.ams-net.org/feeds/
+- https://musicologynow.org/about-musicology-now/
+
 ## 4. Estado del inventario
 
 | Institución/canal | Estado | Tratamiento propuesto |
@@ -118,6 +131,8 @@ Fuentes oficiales:
 | Gallica – RSS de búsquedas | Mecanismo documentado; endpoint dinámico | Investigar búsquedas temáticas, no es feed general |
 | BNE – cinco RSS | Existencia declarada; URL actual pendiente | No configurar hasta localizar y probar endpoints |
 | Google News RSS | Plantilla de consulta documentada | Descubrimiento; identificar siempre el medio original |
+| AMS – Musicology Now | RSS oficial localizado | Publicación divulgativa de musicología; candidato prioritario |
+| AMS – Musicology in the news | Endpoint anunciado, pero 404 en comprobación | No activar hasta localizar URL vigente |
 | DOAJ | API/OAI-PMH y metadatos documentados | Descubrimiento académico, no feed de noticias |
 
 ## 5. Criterios para dar de alta una fuente
@@ -141,6 +156,6 @@ No se debe inventar ni inferir una URL RSS a partir de la dirección de una web.
 La siguiente tanda de trabajo debería cubrir:
 1. Localizar los cinco endpoints actuales de la BNE y comprobar sus respuestas.
 2. Comprobar directamente los feeds de LOC y BnF con un lector RSS, inspeccionando fechas, campos y volumen.
-3. Localizar revistas y centros de musicología con feeds propios (por ejemplo, sociedades musicológicas, revistas universitarias y editoriales académicas).
+3. Ampliar el inventario con revistas y centros de musicología; ya se ha localizado Musicology Now y el directorio de feeds de AMS, con un endpoint que requiere corrección.
 4. Preparar una muestra de entradas reales para evaluar relevancia, duplicados y separación entre noticia, agenda y novedad bibliográfica.
 5. Revisar las condiciones de uso de cada canal antes de fijar qué metadatos o fragmentos se almacenarán.
