@@ -30,6 +30,7 @@ Construir un recolector que:
 - [Matriz de pruebas de ingesta](docs/07-matriz-pruebas-ingesta.md)
 - [Modelo conceptual de persistencia](docs/08-modelo-conceptual-persistencia.md)
 - [Diseño físico propuesto para MySQL/MariaDB](docs/09-diseno-fisico-mysql.md)
+- [Preparación de la base de datos y configuración](docs/10-preparacion-base-datos.md)
 
 ## Principios iniciales
 
@@ -50,4 +51,4 @@ Construir un recolector que:
 - API de IA con adaptador intercambiable (por ejemplo, Gemini o Groq).
 
 
-Las decisiones definitivas se documentarán antes de iniciar la implementación.
+Las migraciones iniciales están preparadas como borrador en `database/migrations/`. No se ejecutarán hasta verificar la versión y los permisos del servidor y aprobar la conexión de la cuenta específica de ai_noticias.
