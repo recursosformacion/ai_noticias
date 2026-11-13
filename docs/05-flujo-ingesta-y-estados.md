@@ -1,6 +1,6 @@
 # Flujo de ingesta, estados y deduplicación
 
-**Estado:** diseño funcional previo al esquema SQL. Define el comportamiento esperado de la primera fase, sin fijar todavía nombres de columnas ni tablas físicas.
+**Estado:** especificación funcional con una primera implementación de captura RSS/Atom y persistencia. El comportamiento descrito es el objetivo; las limitaciones de esta primera iteración se detallan al final.
 
 ## 1. Separar el estado de la fuente del estado de cada noticia
 
@@ -133,4 +133,25 @@ La carga en MySQL/MariaDB se considerará funcional cuando se compruebe que:
 11. Se conserva el idioma original con la evidencia de detección y el idioma de cada aparición.
 12. El modelo admite traducciones adicionales sin sobrescribir el contenido original.
 
-Este documento es una especificación de comportamiento. No autoriza todavía a crear tablas ni a modificar una base de datos existente.
+## 8. Implementación disponible (primera iteración)
+
+La primera implementación está en `app/`:
+
+- `feed_parser.py`: lectura RSS 2.0, Atom y RDF/RSS 1.0 con la biblioteca estándar.
+- `collector.py`: consulta HTTP con timeout, ETag y Last-Modified; límite de 8 MiB por respuesta; normalización básica; hashes de identidad/contenido; persistencia de ejecuciones, publicaciones, observaciones y revisiones.
+- `db.py` y `config.py`: conexión MariaDB mediante PyMySQL y lectura de `osap.toml`; se rechaza cualquier base distinta de `osap_noticias`.
+- `cli.py`: listado de canales, activación explícita tras revisar términos y captura de canales activos.
+- `tests/`: pruebas unitarias de parser y normalización de URL.
+
+La migración 003 registra seis canales candidatos en estado `PAUSED`. No se consulta ningún canal hasta que se active expresamente. NPR y Music Business Worldwide no se incluyen en esta tanda por las restricciones ya documentadas.
+
+### Límites conocidos de esta iteración
+
+- No se ha ejecutado todavía una captura real contra los feeds desde el equipo local.
+- No se descargan artículos completos ni se sigue el enlace de cada noticia; se conserva lo que entrega el feed.
+- La consolidación por URL canónica es conservadora y no fusiona por similitud de título.
+- Los feeds que no proporcionan URL ni identificador estable requieren una política adicional antes de considerarlos fiables.
+- No hay todavía clasificación IA, detección avanzada de idioma ni resumen editorial.
+- La política de retención se limita por ahora a metadatos y textos proporcionados por el feed; debe ajustarse a las condiciones de cada editor.
+
+La implementación no modifica ni borra registros existentes y no inicia captura de fuentes en estado `PAUSED`.
