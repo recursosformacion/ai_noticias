@@ -4,7 +4,6 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from hashlib import sha256
 import json
-import re
 import time
 import unicodedata
 from urllib.error import HTTPError, URLError
