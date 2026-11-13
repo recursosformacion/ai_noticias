@@ -43,7 +43,8 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 
 - [x] Definir protocolo y matriz de pruebas técnicas, editoriales, de duplicación, idioma, reintentos y persistencia (véase [07-matriz-pruebas-ingesta](07-matriz-pruebas-ingesta.md)); pendiente ejecutar pruebas con parser real.
 - [x] Consolidar modelo conceptual separando publisher, canal, ejecución, observación, publicación, noticia consolidada, análisis, textos editoriales y traducciones (véase [08-modelo-conceptual-persistencia](08-modelo-conceptual-persistencia.md)).
-- [ ] Revisar y aprobar el modelo conceptual antes de traducirlo a tablas y relaciones SQL.
+- [x] Traducir el modelo conceptual a un borrador de diseño físico (tablas, claves, índices y transacciones), documentado en [09-diseño físico MySQL](09-diseno-fisico-mysql.md).
+- [ ] Revisar y aprobar el modelo conceptual y el diseño físico antes de preparar SQL ejecutable.
 
 ## IA
 
