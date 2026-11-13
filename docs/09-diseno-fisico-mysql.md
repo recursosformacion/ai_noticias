@@ -305,7 +305,7 @@ El diseño prioriza:
 
 No se crearán índices sobre cada campo por anticipado. Se validarán con consultas reales y `EXPLAIN`; se evitarán índices redundantes y prefijos sobre textos largos salvo necesidad demostrada.
 
-## 6. Decisiones que deben cerrarse antes del SQL ejecutable
+## 6. Decisiones que siguen abiertas
 
 1. Versión real del servidor y compatibilidad MySQL/MariaDB.
 2. Política exacta de collation y sensibilidad a mayúsculas para dominios, URL e identificadores.
@@ -318,14 +318,12 @@ No se crearán índices sobre cada campo por anticipado. Se validarán con consu
 
 ## 7. Fuera de alcance
 
-No se incluyen usuarios, preferencias, suscripciones, boletines, campañas, métricas de lectura, endpoints públicos ni integración de cuentas OSAP. Tampoco se crea aquí ningún fichero de credenciales, migración SQL ni conexión real al servidor.
+No se incluyen usuarios, preferencias, suscripciones, boletines, campañas, métricas de lectura, endpoints públicos ni integración de cuentas OSAP. Las migraciones ejecutables ya están en `database/migrations/`; la aplicación local lee las credenciales desde `osap.toml`, excluido de Git.
 
 ## 8. Compatibilidad y migraciones
 
-La versión de desarrollo comunicada es **MariaDB 10.4.32**. La migración inicial y el catálogo semilla se han revisado a nivel de sintaxis para ese motor: `database/migrations/001_initial_schema.sql` y `002_seed_content_types.sql`. Se utilizan InnoDB, `utf8mb4`, `DATETIME(6)`, JSON (tipo compatible en MariaDB), claves foráneas e inserciones `ON DUPLICATE KEY UPDATE`.
-
-Esta revisión estática no sustituye una ejecución real. La creación de `osap_noticias` y sus tablas queda pendiente de lanzar el inicializador desde el entorno local y comprobar el resultado. Las migraciones se ejecutan en orden; `schema_migrations` registra las aplicadas y las operaciones de creación/semilla están preparadas para repetirse sin duplicar objetos o tipos.
+La versión de desarrollo es **MariaDB 10.4.32**. El usuario ha ejecutado las migraciones 001 y 002 y ha verificado 17 tablas InnoDB, 23 claves foráneas y los diez tipos de contenido iniciales. La migración 003 registra seis canales RSS candidatos en estado `PAUSED`; su aplicación local queda pendiente. Las migraciones se ejecutan en orden y `schema_migrations` registra las versiones.
 
 ## 9. Próximo paso
 
-Ejecutar `crear_bbdd_osap_noticias.bat` desde la carpeta del proyecto o mediante un acceso directo del escritorio. El script utiliza el cliente `mysql` de MariaDB y solicita el usuario y la contraseña de desarrollo de forma interactiva; no guarda credenciales.
+Aplicar la migración 003 desde `crear_bbdd_osap_noticias.bat`, listar los seis canales con `py -3 -m app.cli sources` y revisar las condiciones de uso antes de activar el primero. La captura se ejecuta con `py -3 -m app.cli ingest` y solo consulta canales `ACTIVE`.
