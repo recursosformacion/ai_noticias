@@ -39,7 +39,7 @@ class ObservationIdentityTests(unittest.TestCase):
 
     def test_normalizes_html_entities_accents_punctuation_and_spaces(self):
         first = "  <p>L'Été — MUSIQUE!</p> &amp; concerts "
-        second = "L Ete musique et concerts"
+        second = "L Ete musique concerts"
         self.assertEqual(_normalized_description(first), _normalized_description(second))
         self.assertEqual(_observation_identity({"description": first}), _observation_identity({"description": second}))
 
