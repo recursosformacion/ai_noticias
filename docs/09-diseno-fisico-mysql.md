@@ -327,3 +327,9 @@ La versión de desarrollo es **MariaDB 10.4.32**. El usuario ha ejecutado las mi
 ## 9. Próximo paso
 
 Aplicar la migración 003 desde `crear_bbdd_osap_noticias.bat`, listar los seis canales con `py -3 -m app.cli sources` y revisar las condiciones de uso antes de activar el primero. La captura se ejecuta con `py -3 -m app.cli ingest` y solo consulta canales `ACTIVE`.
+
+## 10. Tipo de contenido predeterminado de las fuentes
+
+La migración `004_source_content_type_hints` añade `source_channels.default_content_type_id` como FK nullable a `content_types`. Es una pista de clasificación a nivel de canal, no el resultado editorial de una noticia.
+
+BnF - Bibliographie nationale / Partitions (ID 6) se asigna a `BIBLIO`. La ingesta conserva la procedencia del canal en `source_observations` y el recolector carga el tipo predeterminado junto con el canal activo. El futuro proceso de análisis podrá utilizar esa pista como sugerencia, pero deberá validar cada elemento antes de guardar `editorial_analyses.content_type_id`. No se debe propagar automáticamente el tipo del canal a noticias consolidadas que puedan reunir publicaciones de distintas procedencias.
