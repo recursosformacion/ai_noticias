@@ -183,21 +183,13 @@ La aplicación validará el JSON y los campos. Una respuesta inválida, incomple
 
 La IA no debe inventar fechas, lugares, participantes ni resultados. Si el fragmento no contiene información suficiente, debe indicarlo y solicitar revisión, no completar los huecos mediante suposiciones.
 
-## 7. Persistencia MySQL/MariaDB: entidades conceptuales
+## 7. Persistencia MySQL/MariaDB: modelo conceptual
 
-El esquema físico se diseñará después de validar el flujo. Como punto de partida se identifican estas entidades:
+El modelo se ha desarrollado en [Modelo conceptual de persistencia](08-modelo-conceptual-persistencia.md). Se distinguen publisher/editor, canal técnico, ejecución de captura, observación recibida, publicación concreta y noticia consolidada. Las publicaciones oficiales en distintos idiomas permanecen separadas y pueden relacionarse con una misma noticia; una publicación puede descubrirse mediante varios canales.
 
-- **news_sources:** catálogo de feeds, APIs e instituciones.
-- **source_fetches:** ejecuciones de consulta, fecha, resultado, estado y errores.
-- **news_items:** noticia normalizada, fechas, título original, descripción disponible, URL y estado de procesamiento.
-- **news_item_sources:** relación entre una noticia consolidada y las apariciones en distintas fuentes.
-- **news_ai_analysis:** proveedor/modelo, versión de prompt, clasificación, JSON recibido, resumen editorial base, fecha y estado.
-- **news_item_translations:** traducciones de títulos, descripciones breves y resúmenes, asociadas a noticia, idioma destino, contenido de origen, proveedor/modelo y versión. Esta entidad permite añadir idiomas sin sobrescribir el texto original.
-- **news_categories:** catálogo controlado de categorías.
-- **news_item_categories:** relación entre noticias y categorías.
-- Las tablas de preferencias de usuario, suscripciones, ediciones y registro de envíos pertenecen a fases posteriores y **no forman parte del esquema de esta primera versión**.
+El modelo incluye análisis versionados, taxonomía y asignaciones, textos editoriales en español y traducciones preparadas para una fase posterior. Los estados de captura, análisis y traducción son independientes. No se incorporan usuarios, preferencias ni boletines.
 
-El esquema inicial se limitará a las fuentes, las ejecuciones de captura, las noticias consolidadas, sus apariciones en fuentes, los análisis de IA y las categorías y asignaciones temáticas. No se crearán dependencias con las tablas de usuarios de OSAP en esta fase.
+El documento 08 define entidades, relaciones, estados, identidad, versionado y cuestiones técnicas pendientes. Todavía no fija tablas ni columnas SQL.
 
 ## 8. Boletín por correo: fase posterior
 
