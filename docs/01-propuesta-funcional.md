@@ -4,9 +4,9 @@
 
 ## 1. Objetivo del paquete
 
-Recopilar automáticamente noticias y novedades de **todos los ámbitos musicales**, tanto de interés general como especializado. El sistema no limitará la recolección a un único género o comunidad: cubrirá, entre otros, música clásica, coral, jazz, rock, pop, música urbana, electrónica, música tradicional, industria musical, educación, musicología, partituras y patrimonio. Cada usuario podrá seleccionar los ámbitos y temas que desea seguir. Las entradas relevantes se conservarán en MySQL/MariaDB y podrán utilizarse posteriormente para elaborar un boletín en español.
+Recopilar automáticamente noticias y novedades de **todos los ámbitos musicales**, tanto de interés general como especializado. El sistema no limitará la recolección a un único género o comunidad: cubrirá, entre otros, música clásica, coral, jazz, rock, pop, música urbana, electrónica, música tradicional, industria musical, educación, musicología, partituras y patrimonio. Las noticias se normalizarán, deduplicarán, clasificarán y almacenarán en MySQL/MariaDB. **El límite funcional de esta primera fase es disponer de ese corpus de noticias correctamente cargado en la base de datos.**
 
-El sistema debe mantener la trazabilidad hasta la fuente original y distinguir claramente entre los datos publicados por la fuente y el texto redactado por la IA.
+El sistema debe mantener la trazabilidad hasta la fuente original y distinguir claramente entre los datos publicados por la fuente y el texto redactado por la IA. La consulta personalizada, las preferencias de usuarios, la integración con OSAP y el envío de boletines quedan expresamente fuera del alcance de esta fase.
 
 ## 2. Flujo general
 
@@ -16,11 +16,10 @@ El sistema debe mantener la trazabilidad hasta la fuente original y distinguir c
 4. **Deduplicación:** detectar repetidos mediante identificador de origen, URL normalizada y, como apoyo, huella del título. Una misma noticia puede aparecer en varias fuentes; conviene conservar esas relaciones en lugar de perder la procedencia.
 5. **Preclasificación:** aplicar reglas sencillas de términos y categorías para descartar ruido evidente y reducir llamadas innecesarias a la IA.
 6. **Clasificación con IA:** decidir si la entrada es pertinente y asignar una o varias categorías. La respuesta debe ajustarse a un esquema JSON validable.
-7. **Redacción:** para las entradas aceptadas, generar un título editorial y un resumen breve en español, sin añadir hechos que no estén respaldados por el material recibido.
-8. **Revisión y publicación:** dejar las noticias clasificadas disponibles para revisión, selección o inclusión automática según una política que se decidirá más adelante.
-9. **Boletín:** preparar una edición con las noticias seleccionadas y enviarla a los suscriptores que hayan dado consentimiento.
+7. **Redacción editorial:** generar, cuando proceda, un título y un resumen breve en español, sin añadir hechos que no estén respaldados por el material recibido.
+8. **Persistencia:** guardar la noticia normalizada, su procedencia, el resultado de clasificación y los textos generados, junto con los estados y datos necesarios para reanudar procesos fallidos.
 
-La recolección, el análisis y el envío serán tareas independientes. Un fallo del proveedor de IA o del SMTP no debe obligar a descargar de nuevo los feeds ni perder las noticias ya almacenadas.
+La primera fase comprende desde la consulta de fuentes hasta la carga verificable en MySQL/MariaDB. La recolección, el análisis y la persistencia deben poder ejecutarse de forma independiente: un fallo de IA no debe provocar una nueva descarga innecesaria ni perder los datos ya capturados. No se implementarán todavía vistas de usuario, boletines ni envío de correo.
 
 ## 3. Fuentes iniciales propuestas
 
@@ -74,20 +73,10 @@ La separación entre «general» y «especializado» será una **clasificación 
 
 Una noticia podrá pertenecer a más de un ámbito. Por ejemplo, una noticia sobre digitalización de manuscritos de una compositora puede ser a la vez patrimonio, musicología y música clásica.
 
-### Preferencias del usuario
+### Alcance de esta primera fase
 
-Cada usuario elegirá qué noticias desea seguir. La selección se basará principalmente en temas/categorías y podrá incluir el ámbito general completo o combinaciones de especialidades. Las preferencias determinarán el contenido de la **vista personal de noticias** y podrán utilizarse también para preparar un boletín personalizado. Seguir temas no equivaldrá a suscribirse por correo: el boletín requerirá un consentimiento independiente, explícito y revocable. Las preferencias nunca reducirán la recolección común.
+La clasificación temática se aplica a cada noticia y se almacena en el corpus común. No se implementarán todavía preferencias individuales, vistas personalizadas ni filtros asociados a cuentas de usuario. La taxonomía se diseña para que pueda reutilizarse en fases posteriores, pero en esta fase su función es organizar y consultar el conjunto de noticias recopiladas.
 
-Esto permite:
-- Evitar que una noticia relevante no se recoja porque ningún usuario la había seleccionado todavía.
-- No consultar repetidamente la misma fuente para cada suscriptor.
-- Permitir que un usuario cambie sus preferencias sin perder el histórico.
-- Preparar boletines distintos según los intereses de cada persona.
-- Incorporar nuevos temas sin rediseñar el sistema de recolección.
-
-La base de datos deberá distinguir el catálogo global de categorías de las preferencias particulares. Una noticia se clasifica una sola vez en el corpus común; después se determina a qué usuarios interesa según sus selecciones. La relación entre categorías y noticias será de muchos a muchos, y la relación entre usuarios y categorías preferidas también.
-
-Las fuentes podrán tener etiquetas temáticas orientativas, pero no serán la única forma de clasificar: una misma fuente puede publicar contenidos de varias áreas y la clasificación final debe hacerse sobre cada noticia.
 
 ## 5. Taxonomía temática inicial
 
@@ -199,19 +188,13 @@ El esquema físico se diseñará después de validar el flujo. Como punto de par
 - **news_ai_analysis:** proveedor/modelo, versión de prompt, clasificación, JSON recibido, resumen generado, fecha y estado.
 - **news_categories:** catálogo controlado de categorías.
 - **news_item_categories:** relación entre noticias y categorías.
-- **user_news_preferences** (nombre conceptual): relación entre el usuario OSAP y los temas/categorías que desea seguir, con estado y fechas de vigencia. No se presupone todavía el nombre definitivo de la tabla ni el esquema de autenticación.
-- La vista personal de noticias se construirá consultando el corpus común según estas preferencias; no se duplicarán noticias por usuario.
-- La suscripción al boletín y su consentimiento se mantendrán separados de las preferencias temáticas.
-- **newsletter_editions:** ediciones del boletín y su estado.
-- **newsletter_edition_items:** noticias incluidas en cada edición y orden de presentación.
-- **newsletter_subscriptions:** suscripciones, consentimiento, fecha de alta/baja y estado.
-- **newsletter_delivery_log:** registro de envíos, destinatario, edición, fecha y resultado, con retención limitada.
+- Las tablas de preferencias de usuario, suscripciones, ediciones y registro de envíos pertenecen a fases posteriores y **no forman parte del esquema de esta primera versión**.
 
-La vinculación de preferencias y suscripciones con cuentas de OSAP deberá hacerse mediante el identificador de usuario acordado con el sistema de autenticación, sin duplicar innecesariamente datos personales. No se presupone todavía el nombre ni la estructura de las tablas de usuarios existentes.
+El esquema inicial se limitará a las fuentes, las ejecuciones de captura, las noticias consolidadas, sus apariciones en fuentes, los análisis de IA y las categorías y asignaciones temáticas. No se crearán dependencias con las tablas de usuarios de OSAP en esta fase.
 
-## 8. Boletín por correo
+## 8. Boletín por correo: fase posterior
 
-El envío será una fase posterior a la recolección y clasificación. El sistema deberá:
+El boletín no forma parte de la primera fase ni debe generar trabajo de implementación ahora. Cuando se aborde, el sistema deberá:
 
 - Permitir que el usuario active voluntariamente la suscripción.
 - Registrar el consentimiento y permitir darse de baja fácilmente.
@@ -245,13 +228,23 @@ No se ha decidido aún si la programación se realizará mediante cron, el progr
 
 ## 11. Fases propuestas
 
-1. Inventariar y verificar fuentes RSS/APIs.
-2. Acordar categorías, criterios de inclusión y exclusión con ejemplos.
-3. Diseñar el esquema MySQL y los estados de procesamiento.
-4. Construir y probar la recolección y deduplicación sin IA.
-5. Incorporar clasificación y resumen mediante IA intercambiable.
-6. Añadir revisión y gestión editorial.
-7. Integrar preferencias personales, suscripciones y boletines.
-8. Programar ejecución, observabilidad, recuperación y mantenimiento.
+### Fase 1: recopilación y carga en base de datos (alcance actual)
 
-No se debe iniciar el envío de correos ni una recolección masiva antes de validar las fases anteriores.
+1. Inventariar y verificar fuentes RSS/APIs.
+2. Acordar categorías y criterios de clasificación con ejemplos reales.
+3. Diseñar el esquema MySQL/MariaDB y los estados de procesamiento.
+4. Construir y probar la recolección, normalización y deduplicación.
+5. Incorporar clasificación y resumen mediante una IA intercambiable.
+6. Persistir noticias, procedencia, categorías y análisis en la base de datos.
+7. Verificar integridad, ausencia de duplicados y posibilidad de reanudar capturas y análisis pendientes.
+
+**Criterio de finalización:** las fuentes previstas se consultan de forma repetible y las noticias quedan cargadas en MySQL/MariaDB con sus metadatos, procedencia, clasificación y estado de procesamiento. La carga debe poder repetirse sin duplicar registros.
+
+### Fases posteriores (fuera del alcance actual)
+
+- Herramientas de revisión y gestión editorial, si se consideran necesarias.
+- Preferencias temáticas por usuario y vistas personalizadas.
+- Integración con cuentas y servicios de OSAP.
+- Suscripciones, generación de boletines y envío de correo.
+
+La programación, observabilidad, recuperación y mantenimiento se resolverán en la medida necesaria para que la primera fase funcione de forma fiable; no se pospondrán los controles técnicos imprescindibles para una carga correcta.
