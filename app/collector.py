@@ -61,11 +61,19 @@ def _fetch(channel: dict) -> tuple[int, bytes, dict, str]:
         raise RuntimeError(f"Error de conexión: {exc.reason}") from exc
 
 
-def _get_or_create_publication(cursor, channel, item, now):
+def _get_or_create_publication(cursor, channel, item, now, existing_publication_id=None):
     canonical = canonical_url(item["url"])
     url_hash = _hash(canonical) if canonical else None
     publication = None
-    if url_hash:
+    # Reuse the publication already linked to this source observation, including
+    # Atom entries that expose an ID but no URL.
+    if existing_publication_id:
+        cursor.execute(
+            "SELECT id, news_item_id FROM news_publications WHERE id=%s FOR UPDATE",
+            (existing_publication_id,),
+        )
+        publication = cursor.fetchone()
+    if publication is None and url_hash:
         cursor.execute(
             "SELECT id, news_item_id FROM news_publications WHERE url_sha256=%s ORDER BY id LIMIT 1 FOR UPDATE",
             (url_hash,),
@@ -127,7 +135,10 @@ def _persist_item(cursor, channel, run_id, item, now):
         (channel["id"], external_hash),
     )
     observation = cursor.fetchone()
-    pub_id, news_id = _get_or_create_publication(cursor, channel, item, now)
+    existing_pub_id = observation["news_publication_id"] if observation else None
+    pub_id, news_id = _get_or_create_publication(
+        cursor, channel, item, now, existing_publication_id=existing_pub_id
+    )
 
     if observation:
         obs_id = observation["id"]
