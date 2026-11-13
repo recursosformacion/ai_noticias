@@ -45,14 +45,16 @@ Por cada elemento recibido se conservará, siempre que el canal lo proporcione:
 - Título y descripción originales.
 - Autor o editor.
 - Fecha de publicación y fecha de actualización, si existen.
-- Idioma, si se declara.
+- Idioma declarado por el feed o elemento, si existe.
+- Idioma detectado del título y descripción, código normalizado (preferiblemente BCP 47), evidencia y confianza.
+- Idioma y URL de cada versión lingüística de la misma noticia, si la fuente las publica.
 - Fecha de primera captura y última observación.
 - Metadatos adicionales útiles del feed/API.
 - Referencia a la fuente y a la ejecución que lo detectó.
 
 No se debe inventar una fecha cuando el feed no la proporciona. Se distinguirán la fecha publicada por la fuente, la fecha de actualización y la fecha de captura.
 
-Los datos originales se conservarán separados de los campos normalizados y de los textos generados por IA. La normalización no debe destruir el valor original.
+Los datos originales se conservarán separados de los campos normalizados y de los textos generados por IA. La normalización no debe destruir el valor original. El idioma declarado por el canal no se aplicará automáticamente a todos sus elementos si la fuente puede publicar en varios idiomas.
 
 ## 3. Deduplicación en varios niveles
 
@@ -96,6 +98,8 @@ La política exacta de versionado se concretará al diseñar la base de datos, p
 - Si se agota el límite, la noticia permanece pendiente para una ejecución posterior.
 - Cambiar el prompt o la versión de taxonomía puede justificar un nuevo análisis, sin volver a descargar el feed.
 - Cada resultado debe conservar proveedor, modelo, versión de prompt, versión de taxonomía, fecha y respuesta estructurada.
+- El título y resumen editorial en español se almacenan separados del título y descripción originales.
+- Las traducciones adicionales se guardan por idioma destino y vinculadas a la versión de contenido traducida; un error de traducción no cambia el estado de la captura ni de la clasificación.
 
 La clasificación automática puede aceptar, rechazar o marcar para revisión. No debe inventar datos que no aparezcan en el material disponible.
 
@@ -126,5 +130,7 @@ La carga en MySQL/MariaDB se considerará funcional cuando se compruebe que:
 8. Las ejecuciones repetidas no crean duplicados.
 9. Los procesos interrumpidos pueden reanudarse.
 10. Se puede consultar qué fuente aportó cada noticia y qué análisis produjo su clasificación.
+11. Se conserva el idioma original con la evidencia de detección y el idioma de cada aparición.
+12. El modelo admite traducciones adicionales sin sobrescribir el contenido original.
 
 Este documento es una especificación de comportamiento. No autoriza todavía a crear tablas ni a modificar una base de datos existente.
