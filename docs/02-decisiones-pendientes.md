@@ -17,8 +17,10 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 ## Criterios editoriales
 
 - [ ] Precisar qué significa «noticia musical» para este proyecto.
-- [ ] Decidir si el alcance inicial se limita a música clásica, coral, musicología y patrimonio o incluye también otros ámbitos musicales.
-- [ ] Definir categorías y ejemplos positivos/negativos para evaluar la clasificación.
+- [x] Definir cobertura general y especializada: el recolector abarcará todos los ámbitos musicales; cada usuario elegirá los temas que desea seguir.
+- [ ] Diseñar una taxonomía de ámbitos generales y especialidades, con categorías jerárquicas y ejemplos positivos/negativos.
+- [ ] Definir cómo podrá el usuario seleccionar temas: ámbitos completos, categorías concretas y posibles exclusiones.
+- [ ] Decidir si las preferencias se aplican solo al boletín o también a una futura vista personal de noticias.
 - [ ] Decidir si las noticias se publican automáticamente o pasan por revisión.
 - [ ] Definir el tratamiento de noticias repetidas, actualizaciones y artículos sindicados.
 - [ ] Decidir la longitud y el tono del resumen en español.
@@ -35,7 +37,8 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 
 - [ ] Confirmar versión y configuración objetivo de MySQL/MariaDB.
 - [ ] Definir conexión y gestión de credenciales mediante configuración externa, nunca en Git.
-- [ ] Determinar cómo se vincularán las suscripciones con los usuarios de OSAP.
+- [ ] Determinar cómo se vincularán las preferencias temáticas y las suscripciones con los usuarios de OSAP.
+- [ ] Definir el modelo de persistencia para preferencias de usuario sin duplicar el corpus común de noticias.
 - [ ] Acordar retención de registros de captura, errores, análisis y envíos.
 - [ ] Definir si el paquete expondrá API propia o será consumido directamente por otro servicio.
 
