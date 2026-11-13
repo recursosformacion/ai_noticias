@@ -1,0 +1,146 @@
+# Inventario inicial de fuentes y canales
+
+**Fecha de comprobación:** 13 de noviembre de 2026.  
+**Estado:** investigación documental inicial. Los endpoints se han localizado en páginas institucionales; antes de incorporarlos a una ejecución automática habrá que comprobar periódicamente que siguen respondiendo y revisar el contenido que entregan.
+
+Este documento separa tres cosas que no deben confundirse:
+
+1. **Fuente editorial:** institución, revista o medio que publica la información.
+2. **Canal técnico:** RSS/Atom, API u otro mecanismo por el que se detectan novedades.
+3. **Utilidad editorial:** si el canal aporta noticias, agenda, novedades bibliográficas o simplemente registros de catálogo.
+
+Un canal oficial no es necesariamente una fuente de noticias adecuada para el boletín. Algunos se proponen como fuentes de descubrimiento y requerirán filtrado.
+
+## 1. Fuentes con canal RSS oficial localizado
+
+### 1.1 Library of Congress (Estados Unidos)
+
+La página oficial de suscripciones agrupa los canales por temática y confirma expresamente dos blogs relacionados con música:
+
+| Fuente | Canal RSS | Utilidad prevista | Evaluación inicial |
+|---|---|---|---|
+| In the Muse Blog | https://blogs.loc.gov/music/feed/ | Colecciones de música, teatro y danza; patrimonio, adquisiciones, actividades y conciertos | **Prioridad alta** |
+| NLS Music Notes Blog | https://blogs.loc.gov/nls-music-notes/feed/ | Música en braille, audio y formatos accesibles | Especializada; incluir si interesa accesibilidad musical |
+| Concerts & Performing Arts Events | https://www.loc.gov/rss/music/concerts.xml | Agenda de conciertos, conferencias y actividades escénicas | Útil para agenda; separar de noticias |
+| Latest News | https://www.loc.gov/rss/pao/news.xml | Noticias generales de la institución | Baja prioridad; necesita filtrado musical |
+
+La página de suscripciones permite localizar los enlaces RSS y describe el ámbito de cada canal. El blog *In the Muse* está dedicado específicamente a las colecciones de música, teatro y danza, por lo que es un candidato especialmente adecuado.
+
+Fuentes oficiales:
+- https://www.loc.gov/subscribe/
+- https://www.loc.gov/rss/faq.html
+
+### 1.2 Bibliothèque nationale de France (BnF)
+
+La BnF mantiene una página institucional de canales RSS para actualidad, prensa y agenda:
+
+- Página de canales: https://www.bnf.fr/fr/flux-rss-site-bnffr
+- Actualidad: https://www.bnf.fr/fr/actualites/rss
+
+Además, la Bibliographie nationale française publica feeds específicos por sección. Hay un canal dedicado a **Partitions** (partituras) y otro a **Son**:
+
+- Índice de feeds: https://bibliographienationale.bnf.fr/content/rss
+- Partitions: https://bibliographienationale.bnf.fr/rss/mus
+- Son: https://bibliographienationale.bnf.fr/rss/son
+
+**Interpretación:** los feeds de la Bibliographie nationale son novedades bibliográficas/catalográficas, no noticias periodísticas. Pueden detectar nuevas publicaciones musicales y registros de sonido, pero conviene almacenarlos con un tipo de contenido distinto (por ejemplo, novedad bibliográfica) para que no se mezclen sin criterio con noticias de actualidad.
+
+La BnF también documenta que Gallica permite suscribirse a un RSS asociado a una búsqueda de su catálogo. Es un mecanismo de seguimiento de resultados y actualizaciones documentales, no un feed general de noticias de Gallica. Se podría usar más adelante para búsquedas temáticas concretas (partituras, manuscritos musicales, compositores), si se comprueba que el mecanismo sigue disponible y que el resultado es útil.
+
+Fuentes oficiales:
+- https://www.bnf.fr/fr/flux-rss-site-bnffr
+- https://bibliographienationale.bnf.fr/content/rss
+- https://api.bnf.fr/fr/blog
+
+### 1.3 Biblioteca Nacional de España (BNE)
+
+La BNE declara disponer de cinco canales RSS para:
+- Noticias.
+- Actividades.
+- Blog de la BNE.
+- Exposiciones virtuales.
+- Noticias bibliotecarias.
+
+La referencia localizada es una entrada del propio Blog de la BNE que confirma esos cinco canales:
+https://www.bne.es/es/blog/blog-bne/las-10-preguntas-mas-frecuentes-sobre-la-bne
+
+**Pendiente:** localizar las URL actuales exactas de los cinco feeds y comprobar que siguen activos. La página de referencia es antigua, por lo que no se incorporan endpoints deducidos ni se da por garantizada su vigencia.
+
+## 2. Agregadores y consultas temáticas
+
+### 2.1 Google News RSS
+
+Se mantiene como mecanismo de descubrimiento transversal, no como fuente editorial primaria. Ejemplo de consulta inicial:
+
+https://news.google.com/rss/search?q=choral+music+OR+partituras&hl=es&gl=ES&ceid=ES:es
+
+Cada consulta debe tener un objetivo temático claro. Se propone mantener consultas separadas, al menos, para:
+- Música coral y vocal.
+- Música clásica e interpretación.
+- Musicología e investigación.
+- Partituras, manuscritos y edición musical.
+- Patrimonio, archivos y bibliotecas musicales.
+- Educación musical.
+
+Al normalizar una entrada procedente de Google News hay que intentar identificar el medio original y conservarlo por separado del agregador. La noticia no debe atribuirse a Google News si el artículo fue publicado por otro medio.
+
+**Pendiente de prueba técnica:** validar el comportamiento de las consultas, los operadores, los idiomas, la paginación/ventana temporal y la forma de recuperar la URL del editor original. No se presupone que todos los resultados incluyan siempre un enlace directo utilizable.
+
+## 3. DOAJ y fuentes académicas
+
+DOAJ es un directorio e índice de revistas de acceso abierto, no una fuente general de noticias musicales. Puede ayudar a descubrir revistas de musicología y publicaciones académicas, pero no debe tratarse como un feed periodístico.
+
+Canales y servicios documentados:
+- API: https://doaj.org/docs/api
+- OAI-PMH: https://doaj.org/docs/oai-pmh/
+- Condiciones de uso y metadatos: https://doaj.org/terms/
+
+DOAJ declara que los metadatos de revistas y artículos están disponibles bajo una renuncia CC0. El servicio OAI-PMH público puede llevar un retraso de hasta 30 días; el acceso premium se actualiza con mayor rapidez. La documentación también describe un CSV público de revistas, actualizado dentro de un margen de 30 días.
+
+**Uso recomendado:** localizar revistas y artículos académicos relevantes y obtener metadatos, no incorporar indiscriminadamente el catálogo completo como si fueran noticias recientes. Para la actualidad de una revista concreta será preferible utilizar el RSS/Atom del propio editor cuando exista. Debe revisarse la licencia del texto completo en la publicación original; la licencia de los metadatos de DOAJ no convierte automáticamente los artículos en contenido reutilizable.
+
+Fuentes oficiales:
+- https://doaj.org/terms/
+- https://doaj.org/docs/oai-pmh/
+- https://doaj.org/docs/journal-csv
+
+## 4. Estado del inventario
+
+| Institución/canal | Estado | Tratamiento propuesto |
+|---|---|---|
+| LOC – In the Muse | RSS oficial localizado | Candidato prioritario para noticias de música y patrimonio |
+| LOC – NLS Music Notes | RSS oficial localizado | Fuente temática especializada |
+| LOC – Concerts & Performing Arts | RSS oficial localizado | Agenda, no mezclar con noticias |
+| LOC – Latest News | RSS oficial localizado | Filtrado temático estricto |
+| BnF – Actualités | RSS oficial localizado | Revisar relevancia musical de cada entrada |
+| BnF – Bibliographie nationale / Partitions | RSS oficial localizado | Novedades bibliográficas musicales |
+| BnF – Bibliographie nationale / Son | RSS oficial localizado | Novedades bibliográficas de sonido |
+| Gallica – RSS de búsquedas | Mecanismo documentado; endpoint dinámico | Investigar búsquedas temáticas, no es feed general |
+| BNE – cinco RSS | Existencia declarada; URL actual pendiente | No configurar hasta localizar y probar endpoints |
+| Google News RSS | Plantilla de consulta documentada | Descubrimiento; identificar siempre el medio original |
+| DOAJ | API/OAI-PMH y metadatos documentados | Descubrimiento académico, no feed de noticias |
+
+## 5. Criterios para dar de alta una fuente
+
+Antes de activar cualquier fuente en producción, registrar:
+
+- Institución/editor y nombre exacto del canal.
+- URL oficial de la página que documenta el canal.
+- URL del endpoint y formato detectado (RSS, Atom, XML, JSON, OAI-PMH).
+- Tipo de contenido: noticia, agenda, publicación académica, novedad bibliográfica o actualización de catálogo.
+- Idioma y cobertura temática.
+- Frecuencia observada y número aproximado de elementos.
+- Presencia de fecha, autor, resumen, identificador y enlace original.
+- Condiciones de uso y límites técnicos aplicables.
+- Fecha de última comprobación y resultado de la prueba.
+
+No se debe inventar ni inferir una URL RSS a partir de la dirección de una web. Si no se localiza un canal oficial o una API documentada, la fuente permanece como pendiente y no se automatiza mediante scraping por defecto.
+
+## 6. Próxima investigación
+
+La siguiente tanda de trabajo debería cubrir:
+1. Localizar los cinco endpoints actuales de la BNE y comprobar sus respuestas.
+2. Comprobar directamente los feeds de LOC y BnF con un lector RSS, inspeccionando fechas, campos y volumen.
+3. Localizar revistas y centros de musicología con feeds propios (por ejemplo, sociedades musicológicas, revistas universitarias y editoriales académicas).
+4. Preparar una muestra de entradas reales para evaluar relevancia, duplicados y separación entre noticia, agenda y novedad bibliográfica.
+5. Revisar las condiciones de uso de cada canal antes de fijar qué metadatos o fragmentos se almacenarán.
