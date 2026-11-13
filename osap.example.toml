@@ -1,0 +1,12 @@
+# Plantilla pública. Copiar a osap.toml en cada entorno.
+# No introducir contraseñas reales en este archivo ni en Git.
+
+[db]
+port = 3306
+host = "127.0.0.1"
+name = "osap_noticias"
+user = "USUARIO_BBDD"
+password = ""
+
+# La aplicación deberá leer la contraseña desde OSAP_DB_PASSWORD
+# (o desde el gestor de secretos del servicio), nunca desde Git.
