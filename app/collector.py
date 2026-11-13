@@ -39,7 +39,7 @@ def _identity_text(value: str | None) -> str:
 def _normalized_description(value: str | None) -> str:
     """Normaliza la descripción, eliminando HTML, entidades y diferencias tipográficas."""
     text = html.unescape(value or "")
-    text = re.sub(r"(?is)<(script|style)\\b.*?>.*?</\\1>", " ", text)
+    text = re.sub(r"(?is)<(script|style)\b.*?>.*?</\1>", " ", text)
     text = re.sub(r"(?s)<[^>]*>", " ", text)
     return _identity_text(text)
 
@@ -186,7 +186,7 @@ def _get_or_create_publication(cursor, channel, item, now, existing_publication_
         ),
     )
     pub_id = cursor.lastrowid
-    cursor.execute("UPDATE news_items SET primary_publication_id=%s WHERE id=%s", (pub_id, news_id))
+    cursor.execute("UPDATE news_items SET primary_publication_id=COALESCE(primary_publication_id,%s) WHERE id=%s", (pub_id, news_id))
     return pub_id, news_id
 
 
@@ -209,28 +209,6 @@ def _persist_item(cursor, channel, run_id, item, now):
         (channel["id"], external_hash),
     )
     observation = cursor.fetchone()
-
-    # Upgrade an existing observation created by the old URL-based fallback.
-    # Match its current title/date before changing its unique identity hash;
-    # this preserves its row, publication link and accumulated revision history.
-    if observation is None and not item.get("external_id"):
-        cursor.execute(
-            """SELECT id, content_hash, news_publication_id
-            FROM source_observations
-            WHERE source_channel_id=%s AND title_original=%s
-              AND published_at_raw <=> %s
-            ORDER BY id LIMIT 1 FOR UPDATE""",
-            (channel["id"], item["title"], item.get("published_raw")),
-        )
-        legacy = cursor.fetchone()
-        if legacy:
-            cursor.execute(
-                """UPDATE source_observations
-                SET external_id=%s, external_id_hash=%s
-                WHERE id=%s""",
-                (external_id, external_hash, legacy["id"]),
-            )
-            observation = legacy
 
     existing_pub_id = observation["news_publication_id"] if observation else None
     pub_id, news_id = _get_or_create_publication(
