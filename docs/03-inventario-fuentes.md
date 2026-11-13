@@ -66,6 +66,44 @@ https://www.bne.es/es/blog/blog-bne/las-10-preguntas-mas-frecuentes-sobre-la-bne
 
 **Pendiente:** localizar las URL actuales exactas de los cinco feeds y comprobar que siguen activos. La página de referencia es antigua, por lo que no se incorporan endpoints deducidos ni se da por garantizada su vigencia. La web actual de la BNE mantiene secciones diferenciadas de noticias, agenda y blog, pero la consulta automatizada de las páginas institucionales devuelve acceso restringido (403) en esta investigación; los resultados públicos consultados no exponen los enlaces RSS concretos. Por tanto, no se declara resuelto el endpoint.
 
+### 1.6 Bachtrack
+
+Bachtrack publica contenidos internacionales sobre música clásica, ópera, danza y eventos. Su propia documentación declara tres feeds principales:
+
+- Noticias: https://bachtrack.com/news.rss.xml
+- Artículos: https://bachtrack.com/articles.rss.xml
+- Críticas: https://bachtrack.com/rss.xml
+
+También ofrece feeds de críticas por categoría (conciertos, ópera y danza). La web tiene edición en español, además de inglés, francés y alemán.
+
+**Evaluación:** candidato prioritario para la cobertura de música clásica. Los tres tipos deben conservarse separados: noticias, artículos/entrevistas y críticas. La documentación oficial describe expresamente los feeds; la petición al feed de noticias respondió con content-type application/rss+xml en esta comprobación. Queda pendiente probar la lectura de los elementos con feedparser y revisar las condiciones de uso.
+
+Fuentes:
+- https://bachtrack.com/fr_FR/handler/documentation/view/ug-rss-feeds
+- https://bachtrack.com/es_ES/
+
+### 1.7 Music Business Worldwide
+
+Publicación especializada en noticias, empleo y análisis de la industria musical internacional.
+
+- RSS localizado: https://www.musicbusinessworldwide.com/feed/
+
+**Evaluación:** candidato prioritario para industria musical, mercado, sellos, editoriales, distribución, plataformas y derechos. Un directorio de feeds registra el canal como activo y la petición directa respondió con content-type text/xml. Falta validar el contenido con feedparser y revisar las condiciones del editor; no debe confundirse la validación del endpoint con una autorización para reutilizar artículos completos.
+
+Fuente de descubrimiento:
+- https://www.musicbusinessworldwide.com/
+
+### 1.8 NPR Music
+
+Canal de NPR dedicado a noticias, reportajes, actuaciones y contenidos musicales.
+
+- RSS localizado: https://feeds.npr.org/1039/rss.xml
+
+**Evaluación:** candidato para música general y reportajes, especialmente para ampliar la cobertura anglófona más allá de la industria. La dirección del feed aparece en directorios RSS y la petición directa respondió con content-type text/xml. Falta validar los elementos, actividad reciente y condiciones de uso desde la documentación de NPR.
+
+Fuente:
+- https://www.npr.org/sections/music/
+
 ## 2. Agregadores y consultas temáticas
 
 ### 2.1 Google News RSS
@@ -143,6 +181,9 @@ Fuentes:
 | AMS – Musicology Now | RSS oficial localizado | Publicación divulgativa de musicología; candidato prioritario |
 | AMS – Musicology in the news | Endpoint anunciado, pero 404 en comprobación | No activar hasta localizar URL vigente |
 | RILM – Bibliolore | Blog activo; endpoint /feed/ localizado y responde como application/rss+xml; lectura funcional pendiente | Candidato prioritario; probar con feedparser |
+| Bachtrack – News / Articles / Reviews | Tres feeds documentados oficialmente; feed de noticias responde como application/rss+xml | Candidato prioritario para clásica, ópera, artículos y críticas; separar tipos |
+| Music Business Worldwide | Endpoint /feed/ localizado; responde como text/xml; validación funcional pendiente | Candidato prioritario para industria musical |
+| NPR Music | Endpoint RSS localizado; responde como text/xml; validación funcional pendiente | Candidato para noticias y reportajes musicales generales |
 | DOAJ | API/OAI-PMH y metadatos documentados | Descubrimiento académico, no feed de noticias |
 
 ## 5. Criterios para dar de alta una fuente
@@ -167,12 +208,17 @@ Para evitar que la primera implementación dependa de una lista excesiva de cana
 
 ### Tanda inicial de pruebas
 - LOC – In the Muse: contenido musical editorial y patrimonial, con RSS institucional localizado.
+- Bachtrack – News: noticias internacionales de música clásica, ópera y actividad artística.
+- Music Business Worldwide: actualidad de la industria musical.
+- NPR Music: reportajes y actualidad musical de interés general.
 - Musicology Now: divulgación e investigación musicológica, con RSS localizado.
 - Google News RSS: descubrimiento transversal en español e inglés, manteniendo separado el medio original.
 - BnF – Actualités: canal institucional general que requiere filtrado por contenido musical.
 - BnF – Bibliographie nationale / Partitions: novedades bibliográficas musicales, almacenadas con tipo BIBLIO y no como noticia periodística.
 
 ### Tanda de ampliación
+- Bachtrack – Articles y Reviews: artículos, entrevistas y críticas, diferenciados de las noticias.
+- NPR Music: mantener como candidato hasta verificar la frecuencia y la calidad de metadatos.
 - LOC – NLS Music Notes, por su especialización en accesibilidad.
 - LOC – Concerts & Performing Arts, como agenda.
 - BnF – Son, como novedad bibliográfica/catalográfica.
@@ -185,7 +231,7 @@ La prioridad es probar una fuente de cada comportamiento relevante (noticia edit
 ## 7. Próxima investigación
 
 1. Localizar los cinco endpoints actuales de la BNE y comprobar sus respuestas.
-2. Comprobar directamente los feeds de LOC y BnF con un lector RSS, inspeccionando fechas, campos y volumen.
+2. Comprobar directamente los feeds de LOC, BnF, Bachtrack, Music Business Worldwide y NPR con un lector RSS, inspeccionando fechas, campos y volumen.
 3. Probar funcionalmente el RSS localizado de Bibliolore y corregir el endpoint AMS anunciado que devuelve 404.
 4. Preparar una muestra de entradas reales para evaluar relevancia, duplicados y separación entre noticia, agenda y novedad bibliográfica.
 5. Revisar las condiciones de uso de cada canal antes de fijar qué metadatos o fragmentos se almacenarán.
