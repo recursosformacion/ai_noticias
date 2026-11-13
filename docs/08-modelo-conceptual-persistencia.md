@@ -1,7 +1,7 @@
 # Modelo conceptual de persistencia
 
 **Estado:** propuesta conceptual consolidada para revisión antes de diseñar el esquema MySQL/MariaDB.  
-**No es SQL ni una autorización para crear tablas.**
+**Base de datos de destino acordada:** `osap_noticias` (MySQL/MariaDB).\n\n**No es SQL ni una autorización para crear tablas.**
 
 ## 1. Principios del modelo
 
