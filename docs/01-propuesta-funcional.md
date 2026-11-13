@@ -76,7 +76,7 @@ Una noticia podrá pertenecer a más de un ámbito. Por ejemplo, una noticia sob
 
 ### Preferencias del usuario
 
-Cada usuario elegirá qué noticias desea seguir. La selección se basará principalmente en temas/categorías y podrá incluir el ámbito general completo o combinaciones de especialidades. Las preferencias afectarán a la consulta y presentación de noticias para ese usuario —incluido el futuro boletín—, pero **no reducirán la recolección común**.
+Cada usuario elegirá qué noticias desea seguir. La selección se basará principalmente en temas/categorías y podrá incluir el ámbito general completo o combinaciones de especialidades. Las preferencias determinarán el contenido de la **vista personal de noticias** y podrán utilizarse también para preparar un boletín personalizado. Seguir temas no equivaldrá a suscribirse por correo: el boletín requerirá un consentimiento independiente, explícito y revocable. Las preferencias nunca reducirán la recolección común.
 
 Esto permite:
 - Evitar que una noticia relevante no se recoja porque ningún usuario la había seleccionado todavía.
@@ -200,6 +200,8 @@ El esquema físico se diseñará después de validar el flujo. Como punto de par
 - **news_categories:** catálogo controlado de categorías.
 - **news_item_categories:** relación entre noticias y categorías.
 - **user_news_preferences** (nombre conceptual): relación entre el usuario OSAP y los temas/categorías que desea seguir, con estado y fechas de vigencia. No se presupone todavía el nombre definitivo de la tabla ni el esquema de autenticación.
+- La vista personal de noticias se construirá consultando el corpus común según estas preferencias; no se duplicarán noticias por usuario.
+- La suscripción al boletín y su consentimiento se mantendrán separados de las preferencias temáticas.
 - **newsletter_editions:** ediciones del boletín y su estado.
 - **newsletter_edition_items:** noticias incluidas en cada edición y orden de presentación.
 - **newsletter_subscriptions:** suscripciones, consentimiento, fecha de alta/baja y estado.
