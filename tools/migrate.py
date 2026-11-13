@@ -11,6 +11,7 @@ MIGRATIONS = [
     ROOT / "database" / "migrations" / "001_initial_schema.sql",
     ROOT / "database" / "migrations" / "002_seed_content_types.sql",
     ROOT / "database" / "migrations" / "003_initial_source_candidates.sql",
+    ROOT / "database" / "migrations" / "004_source_content_type_hints.sql",
 ]
 
 
