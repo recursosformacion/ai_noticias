@@ -32,6 +32,8 @@ Construir un recolector que:
 - [Diseño físico propuesto para MySQL/MariaDB](docs/09-diseno-fisico-mysql.md)
 - [Preparación de la base de datos y configuración](docs/10-preparacion-base-datos.md)
 
+Para verificar la instalación local de MariaDB, ejecutar `verificar_bbdd_osap_noticias.bat`. Los scripts de base de datos leen la configuración local de `osap.toml`, que no se versiona.
+
 ## Principios iniciales
 
 - Priorizar RSS y APIs oficiales frente al scraping de páginas.
