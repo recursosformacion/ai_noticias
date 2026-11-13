@@ -155,3 +155,10 @@ La migración 003 registra seis canales candidatos en estado `PAUSED`. No se con
 - La política de retención se limita por ahora a metadatos y textos proporcionados por el feed; debe ajustarse a las condiciones de cada editor.
 
 La implementación no modifica ni borra registros existentes y no inicia captura de fuentes en estado `PAUSED`.
+
+
+## 9. Sondeo técnico sin persistencia
+
+El comando `py -3 -m app.cli probe` permite comprobar los feeds de LOC – In the Muse y BnF – Partitions antes de activar la ingesta. Consulta únicamente las URLs exactas incluidas en una lista permitida y comprueba que las redirecciones permanezcan dentro del dominio institucional esperado. Resume el número de elementos y la presencia de URL, autor, fecha e identificador, sin imprimir títulos ni descripciones.
+
+El sondeo no inserta ni actualiza filas, no crea `fetch_runs`, no guarda el cuerpo XML y no cambia el estado PAUSED de los canales. Se puede limitar con `--source-id ID`. No debe utilizarse para probar canales cuya política de uso sigue pendiente o prohíbe el uso automatizado previsto.
