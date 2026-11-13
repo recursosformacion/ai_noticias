@@ -27,6 +27,8 @@ Construir un recolector que:
 - [Criterios editoriales y de clasificación](docs/04-criterios-clasificacion.md)
 - [Flujo de ingesta, estados y deduplicación](docs/05-flujo-ingesta-y-estados.md)
 - [Idioma original, traducciones y presentación multilingüe](docs/06-idiomas-y-traducciones.md)
+- [Matriz de pruebas de ingesta](docs/07-matriz-pruebas-ingesta.md)
+- [Modelo conceptual de persistencia](docs/08-modelo-conceptual-persistencia.md)
 
 ## Principios iniciales
 
