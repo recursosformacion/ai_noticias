@@ -1,19 +1,20 @@
 """Limpieza puntual de duplicados de las primeras pruebas del canal BnF.
 
 Por defecto solo informa. Para aplicar: python -m tools.repair_bnf_test_data --apply
-Solo actúa sobre source_channel_id=6 y se niega a borrar noticias con análisis asociados.
+Solo actúa sobre el canal BnF de pruebas (ID 6), valida el estado esperado y
+se niega a borrar noticias que ya tengan análisis o referencias editoriales.
 """
 from __future__ import annotations
 
 import argparse
 import json
-import re
 import unicodedata
 
 from app.db import connect
 
 
 SOURCE_ID = 6
+SOURCE_URL = "https://bibliographienationale.bnf.fr/rss/mus"
 
 
 def _key(row: dict) -> tuple[str, str]:
@@ -44,6 +45,14 @@ def main() -> int:
     try:
         with connection.cursor() as cursor:
             cursor.execute(
+                "SELECT id, url FROM source_channels WHERE id=%s FOR UPDATE",
+                (SOURCE_ID,),
+            )
+            channel = cursor.fetchone()
+            if not channel or channel["url"] != SOURCE_URL:
+                raise RuntimeError("El canal 6 no coincide con el RSS BnF esperado. No se modifica nada.")
+
+            cursor.execute(
                 "SELECT * FROM source_observations WHERE source_channel_id=%s ORDER BY id FOR UPDATE",
                 (SOURCE_ID,),
             )
@@ -51,11 +60,12 @@ def main() -> int:
             groups = _groups(rows)
             duplicate_ids = [row["id"] for group in groups for row in group[1:]]
             keepers = [(group[0], group[-1]) for group in groups]
+            distinct_count = len(rows) - len(duplicate_ids)
 
-            print(json.dumps({
+            report = {
                 "source_channel_id": SOURCE_ID,
                 "observations": len(rows),
-                "distinct_news_by_title_and_date": len(rows) - len(duplicate_ids),
+                "distinct_news_by_title_and_date": distinct_count,
                 "duplicate_observation_ids": duplicate_ids,
                 "duplicate_groups": [
                     {"keep": group[0]["id"], "remove": [r["id"] for r in group[1:]],
@@ -71,46 +81,45 @@ def main() -> int:
                     (SOURCE_ID,),
                 ),
                 "mode": "APPLY" if args.apply else "DRY RUN",
-            }, ensure_ascii=False, indent=2, default=str))
+            }
+            print(json.dumps(report, ensure_ascii=False, indent=2, default=str))
 
             if not args.apply:
                 connection.rollback()
                 print("Sin cambios. Repite con --apply para ejecutar.")
                 return 0
 
-            # No borrar datos que ya hayan entrado en análisis editorial.
-            for table, column, ids in (
-                ("analysis_runs", "news_item_id", []),
-                ("analysis_inputs", "news_publication_id", []),
-                ("news_item_categories", "news_item_id", []),
-                ("editorial_texts", "news_item_id", []),
-            ):
-                if not ids:
-                    continue
+            # Esta limpieza es deliberadamente específica para el estado observado.
+            # Si hay nuevos datos o grupos ambiguos, se detiene para revisión.
+            if len(rows) != 12 or distinct_count != 7 or len(groups) != 5:
+                raise RuntimeError(
+                    "El estado ya no coincide con las primeras pruebas (esperadas: "
+                    "12 observaciones, 7 noticias y 5 duplicados). No se modifica nada."
+                )
+            if any(len(group) != 2 for group in groups):
+                raise RuntimeError("Hay grupos con más de dos filas; se requiere revisión manual.")
 
             publication_ids = []
             news_item_ids = []
             for keeper, latest in keepers:
-                if latest["id"] == keeper["id"]:
-                    continue
                 keeper_pub = keeper.get("news_publication_id")
                 duplicate_pub = latest.get("news_publication_id")
                 if not keeper_pub or not duplicate_pub:
                     raise RuntimeError(
-                        f"Observaciones {keeper['id']}/{latest['id']}: falta publicación enlazada; "
-                        "no se puede hacer una fusión segura."
+                        f"Observaciones {keeper['id']}/{latest['id']}: falta publicación enlazada."
                     )
                 cursor.execute("SELECT * FROM news_publications WHERE id=%s FOR UPDATE", (keeper_pub,))
-                keeper_publication = cursor.fetchone()
+                if not cursor.fetchone():
+                    raise RuntimeError(f"No existe la publicación {keeper_pub} de la observación superviviente.")
                 cursor.execute("SELECT * FROM news_publications WHERE id=%s FOR UPDATE", (duplicate_pub,))
                 duplicate_publication = cursor.fetchone()
-                if not keeper_publication or not duplicate_publication:
-                    raise RuntimeError("No se encuentra una publicación asociada a una observación duplicada.")
+                if not duplicate_publication:
+                    raise RuntimeError(f"No existe la publicación duplicada {duplicate_pub}.")
                 publication_ids.append(duplicate_pub)
                 if duplicate_publication["news_item_id"] is not None:
                     news_item_ids.append(duplicate_publication["news_item_id"])
 
-                # La observación superviviente adopta la identidad exacta del último duplicado.
+                # La observación superviviente adopta la identidad exacta de la fila duplicada más reciente.
                 cursor.execute(
                     """UPDATE source_observations SET fetch_run_id=%s, external_id=%s,
                        external_id_hash=%s, url_original=%s, title_original=%s,
@@ -126,7 +135,7 @@ def main() -> int:
                      latest["payload_metadata"], latest["content_hash"], latest["last_seen_at"],
                      latest["processing_status"], keeper["id"]),
                 )
-                # Actualiza metadatos de la publicación original, sin cambiar su news_item.
+                # Conserva la publicación/noticia original y actualiza sus datos de fuente.
                 cursor.execute(
                     """UPDATE news_publications SET external_id=%s, canonical_url=%s,
                        original_url=%s, url_sha256=%s, title_original=%s,
@@ -143,67 +152,75 @@ def main() -> int:
                      duplicate_publication["last_seen_at"], keeper_pub),
                 )
 
-            # Verificar que no existan análisis ni referencias editoriales a los duplicados.
-            for table, column, ids in (
+            # No eliminar publicaciones/noticias si ya se usan en análisis o textos editoriales.
+            checks = (
                 ("analysis_inputs", "news_publication_id", publication_ids),
                 ("analysis_runs", "news_item_id", news_item_ids),
                 ("news_item_categories", "news_item_id", news_item_ids),
                 ("editorial_texts", "news_item_id", news_item_ids),
-            ):
+            )
+            for table, column, ids in checks:
                 if ids:
                     placeholders = ",".join(["%s"] * len(ids))
                     n = _count(cursor, f"SELECT COUNT(*) AS n FROM {table} WHERE {column} IN ({placeholders})", ids)
                     if n:
-                        raise RuntimeError(
-                            f"Se cancela: {table} contiene {n} referencias a registros duplicados."
-                        )
+                        raise RuntimeError(f"Se cancela: {table} contiene {n} referencias a duplicados.")
 
-            # Las revisiones de este canal son las falsas alternancias de la prueba inicial.
-            cursor.execute(
+            # Cada noticia duplicada debe estar enlazada solo a su publicación duplicada.
+            if news_item_ids:
+                placeholders = ",".join(["%s"] * len(news_item_ids))
+                n = _count(
+                    cursor,
+                    f"""SELECT COUNT(*) AS n FROM news_publications
+                        WHERE news_item_id IN ({placeholders})
+                          AND id NOT IN ({",".join(["%s"] * len(publication_ids))})""",
+                    (*news_item_ids, *publication_ids),
+                )
+                if n:
+                    raise RuntimeError("Una noticia duplicada tiene otras publicaciones asociadas; no se borra.")
+
+            # Las revisiones BnF son las alternancias falsas de estas primeras pruebas.
+            n = _count(
+                cursor,
                 """SELECT COUNT(*) AS n FROM analysis_inputs ai
                    JOIN observation_revisions r ON r.id=ai.observation_revision_id
                    JOIN source_observations o ON o.id=r.source_observation_id
                    WHERE o.source_channel_id=%s""",
                 (SOURCE_ID,),
             )
-            if cursor.fetchone()["n"]:
+            if n:
                 raise RuntimeError("Hay análisis que utilizan revisiones BnF; no se borrarán.")
 
-            # Eliminar observaciones repetidas antes de sus publicaciones.
-            if duplicate_ids:
-                placeholders = ",".join(["%s"] * len(duplicate_ids))
-                cursor.execute(
-                    f"DELETE FROM source_observations WHERE id IN ({placeholders}) AND source_channel_id=%s",
-                    (*duplicate_ids, SOURCE_ID),
-                )
+            placeholders = ",".join(["%s"] * len(duplicate_ids))
+            cursor.execute(
+                f"DELETE FROM source_observations WHERE id IN ({placeholders}) AND source_channel_id=%s",
+                (*duplicate_ids, SOURCE_ID),
+            )
             cursor.execute(
                 """DELETE r FROM observation_revisions r
                    JOIN source_observations o ON o.id=r.source_observation_id
                    WHERE o.source_channel_id=%s""",
                 (SOURCE_ID,),
             )
-            if publication_ids:
-                placeholders = ",".join(["%s"] * len(publication_ids))
-                cursor.execute(f"DELETE FROM news_publications WHERE id IN ({placeholders})", publication_ids)
+            placeholders = ",".join(["%s"] * len(publication_ids))
+            cursor.execute(f"DELETE FROM news_publications WHERE id IN ({placeholders})", publication_ids)
             if news_item_ids:
                 placeholders = ",".join(["%s"] * len(news_item_ids))
                 cursor.execute(f"DELETE FROM news_items WHERE id IN ({placeholders})", news_item_ids)
 
             connection.commit()
             with connection.cursor() as cursor:
-                cursor.execute(
-                    """SELECT COUNT(*) AS n FROM source_observations
-                       WHERE source_channel_id=%s""",
+                remaining = _count(
+                    cursor, "SELECT COUNT(*) AS n FROM source_observations WHERE source_channel_id=%s",
                     (SOURCE_ID,),
                 )
-                remaining = cursor.fetchone()["n"]
-                cursor.execute(
+                revisions = _count(
+                    cursor,
                     """SELECT COUNT(*) AS n FROM observation_revisions r
                        JOIN source_observations o ON o.id=r.source_observation_id
                        WHERE o.source_channel_id=%s""",
                     (SOURCE_ID,),
                 )
-                revisions = cursor.fetchone()["n"]
             print(f"Limpieza aplicada. Observaciones restantes: {remaining}; revisiones: {revisions}.")
             return 0
     except Exception:
