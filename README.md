@@ -54,3 +54,14 @@ Para verificar la instalación local de MariaDB, ejecutar `verificar_bbdd_osap_n
 
 
 Las migraciones `001` a `003` están en `database/migrations/`. Se aplican desde `crear_bbdd_osap_noticias.bat`, leyendo la configuración local `osap.toml`. Para listar fuentes: ejecutar `ver_fuentes.bat` o `py -3 -m app.cli sources`. Para activar un canal tras revisar sus condiciones: `py -3 -m app.cli activate --source-id ID --confirm-terms-reviewed`. Para capturar canales activos: `py -3 -m app.cli ingest` o `capturar_noticias.bat`. Las dependencias están en `requirements.txt`; las pruebas unitarias se ejecutan con `py -3 -m unittest discover -s tests -v`.
+
+
+### Sondeo técnico previo (sin persistencia)
+
+Antes de activar una fuente se puede comprobar la estructura del feed de los dos candidatos autorizados para esta prueba:
+
+```powershell
+py -3 -m app.cli probe
+```
+
+El comando solo consulta LOC – In the Muse y BnF – Partitions, muestra el número de elementos y la disponibilidad de campos (URL, autor, fecha e identificador), y **no guarda noticias ni crea ejecuciones en la base de datos**. Admite `--source-id ID` para limitar la consulta a uno de esos canales. No es un mecanismo para probar fuentes con permisos pendientes.
