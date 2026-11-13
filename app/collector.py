@@ -355,7 +355,8 @@ def probe_candidate_channels(connection, source_id: int | None = None) -> list[d
 
 def ingest_active_channels(connection, source_id: int | None = None) -> list[dict]:
     with connection.cursor() as cursor:
-        sql = """SELECT id, publisher_id, provider_name, name, url, etag, last_modified
+        sql = """SELECT id, publisher_id, provider_name, name, url, etag, last_modified,
+                        default_content_type_id
                  FROM source_channels WHERE status='ACTIVE'"""
         params = ()
         if source_id is not None:
