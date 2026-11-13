@@ -80,7 +80,7 @@ La clasificación temática se aplica a cada noticia y se almacena en el corpus 
 
 ## 5. Taxonomía temática inicial
 
-La taxonomía se plantea como un árbol de temas seleccionables. El usuario podrá seguir una rama completa (por ejemplo, «Jazz») o afinar la selección en subtemas. Una noticia podrá recibir varias etiquetas; no se forzará a encajar en una única sección.
+La taxonomía se plantea como un árbol de temas para clasificar el corpus. En una fase posterior podrá servir también para preferencias personales. Una noticia podrá recibir varias etiquetas; no se forzará a encajar en una única sección.
 
 Esta es una propuesta de partida, no un catálogo cerrado:
 
@@ -147,14 +147,14 @@ Esta es una propuesta de partida, no un catálogo cerrado:
 
 ### Reglas de clasificación
 
-- Las ramas superiores funcionarán como selecciones amplias: elegir «Jazz» incluirá sus subtemas presentes y futuros.
+- Las ramas superiores agruparán sus subcategorías. La asignación de una categoría padre se podrá deducir de sus descendientes, evitando guardar etiquetas redundantes.
 - Las categorías podrán combinarse; por ejemplo, una noticia de IA aplicada a la restauración de partituras podrá etiquetarse como tecnología, IA y patrimonio musical.
-- Se distinguirá el **tema** de las entidades mencionadas (personas, obras, agrupaciones, instituciones, lugares). Seguir a un compositor concreto podría añadirse como preferencia de entidad en una fase posterior, sin convertir cada nombre propio en una categoría.
+- Se distinguirá el **tema** de las entidades mencionadas (personas, obras, agrupaciones, instituciones, lugares). Las entidades se podrán normalizar más adelante, pero no se convertirán en categorías temáticas.
 - La clasificación debe guardar tanto las etiquetas asignadas como la versión de la taxonomía utilizada, para que los cambios futuros no alteren silenciosamente el significado del histórico.
 - La fuente de procedencia orientará el análisis, pero no determinará por sí sola la categoría: cada noticia se clasificará por su contenido.
 - Se admitirán etiquetas «otros» y «pendiente de clasificación» para no descartar noticias solo porque el árbol todavía no contemple su tema.
 
-La taxonomía se validará con una muestra de noticias reales de ámbitos distintos antes de cerrar el catálogo definitivo.
+La taxonomía se validará con una muestra de noticias reales de ámbitos distintos antes de cerrar el catálogo definitivo. Los criterios operativos de inclusión, exclusión y asignación múltiple se detallan en [Criterios editoriales y de clasificación](04-criterios-clasificacion.md).
 
 ## 6. Uso de IA
 
@@ -222,7 +222,7 @@ Se prevé una ejecución programada (por ejemplo, diaria al inicio), pero la fre
 - Un fallo de una fuente no debe detener las demás.
 - Los errores y tiempos de respuesta deben quedar registrados.
 - La clasificación pendiente debe poder retomarse sin volver a recolectar.
-- El envío de una edición debe poder reintentarse sin duplicar entregas ya confirmadas.
+- Los procesos deben registrar sus intentos y errores para permitir reintentos controlados.
 
 No se ha decidido aún si la programación se realizará mediante cron, el programador del sistema o un worker persistente propio.
 
