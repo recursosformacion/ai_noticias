@@ -1,12 +1,12 @@
 # ai_noticias
 
-Paquete independiente para recopilar, clasificar y preparar noticias de todos los ámbitos musicales, tanto generales como especializados, con almacenamiento en MySQL/MariaDB y posibilidad de generar boletines por correo.
+Paquete independiente para recopilar, clasificar y almacenar en MySQL/MariaDB noticias de todos los ámbitos musicales, tanto generales como especializados. Los boletines y las funciones para usuarios quedan para una fase posterior.
 
 ## Estado
 
-**Fase actual: recopilación y definición de requisitos.**
+**Fase actual: diseño de la recopilación, clasificación y carga en MySQL/MariaDB.**
 
-Este repositorio recoge ideas, fuentes potenciales, decisiones de arquitectura y cuestiones pendientes. Todavía no contiene una aplicación funcional ni debe interpretarse como una especificación cerrada.
+El objetivo de esta primera fase es terminar con las noticias recopiladas, normalizadas, deduplicadas, clasificadas y cargadas correctamente en MySQL/MariaDB. Las preferencias personales, las vistas personalizadas, la integración con OSAP y los boletines por correo quedan fuera de esta fase. Este repositorio recoge ideas, fuentes potenciales, decisiones de arquitectura y cuestiones pendientes; todavía no contiene una aplicación funcional ni debe interpretarse como una especificación cerrada.
 
 ## Objetivo
 
