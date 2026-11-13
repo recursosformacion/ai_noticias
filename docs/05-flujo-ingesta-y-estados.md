@@ -56,26 +56,24 @@ No se debe inventar una fecha cuando el feed no la proporciona. Se distinguirán
 
 Los datos originales se conservarán separados de los campos normalizados y de los textos generados por IA. La normalización no debe destruir el valor original. El idioma declarado por el canal no se aplicará automáticamente a todos sus elementos si la fuente puede publicar en varios idiomas.
 
-## 3. Deduplicación en varios niveles
+## 3. Identidad y deduplicación por descripción
 
-La deduplicación debe evitar tanto duplicados evidentes como fusiones incorrectas de noticias diferentes.
+La identidad de una noticia se calcula exclusivamente a partir de su descripción:
 
-Orden de decisión:
+1. Decodificar entidades HTML.
+2. Eliminar etiquetas HTML y el contenido de bloques `script` y `style`.
+3. Normalizar Unicode, eliminar diacríticos y convertir a minúsculas.
+4. Sustituir puntuación y separadores por espacios y colapsar espacios consecutivos.
+5. Calcular SHA-256 del texto resultante.
 
-1. **Identificador externo dentro de la misma fuente:** si el identificador coincide, se trata del mismo elemento de esa fuente.
-2. **URL canónica:** si dos fuentes apuntan al mismo artículo original, se consideran apariciones de una misma noticia, conservando ambas procedencias.
-3. **URL de redirección o agregador:** intentar resolver o normalizar parámetros de seguimiento cuando sea seguro. No eliminar parámetros que formen parte real de la identidad del recurso.
-4. **Similitud de título y fecha:** utilizarla para detectar posibles duplicados, no para fusionarlos automáticamente sin evidencia suficiente.
+El título, fecha, GUID, URL y fuente se conservan como metadatos de procedencia, pero no intervienen en la huella de identidad. Una misma descripción en fuentes distintas se enlaza al mismo `news_item`, manteniendo una fila `news_publications` por publicación/editor y las observaciones asociadas a cada canal.
 
-La misma noticia puede aparecer en un feed institucional, en Google News y en otro agregador. El corpus debe mantener una noticia consolidada y varias relaciones de procedencia.
+La huella se guarda en `source_observations.external_id_hash` (con unicidad por canal) y en `news_publications.description_sha256` (para localizar la noticia común entre fuentes). La migración 005 añade esta última columna e índice.
 
-No deben fusionarse automáticamente:
-- Dos artículos distintos sobre el mismo acontecimiento.
-- Una noticia original y una actualización posterior con información sustancial nueva.
-- Dos eventos diferentes con títulos parecidos.
-- Una reseña y el lanzamiento al que hace referencia.
+No se utiliza similitud semántica ni se fusionan descripciones parecidas. Una modificación real del texto de la descripción produce una huella distinta. Si la descripción falta o queda vacía tras normalizarla, el elemento se registra como error de captura y no se inventa una identidad alternativa.
 
-Cuando no haya certeza, es preferible conservar dos registros candidatos y marcarlos para revisión antes que perder información por una fusión errónea.
+Este criterio asume que descripciones normalizadas idénticas representan la misma noticia. Si una fuente reutiliza descripciones genéricas o textos de plantilla, podría producir una consolidación incorrecta; esos casos deberán identificarse con revisión de los datos, no añadiendo URL, título o fecha a la huella.
+
 
 ## 4. Actualizaciones de una noticia
 
