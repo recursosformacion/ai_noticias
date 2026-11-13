@@ -25,8 +25,10 @@ El fichero local puede contener credenciales de desarrollo. No se copian sus val
 
 ## Compatibilidad y ejecución
 
-La migración 001 está redactada para **MySQL 8.0.16 o posterior**. No se declara todavía compatibilidad validada con MariaDB. Antes de ejecutarla se debe comprobar la versión del servidor y que la cuenta de desarrollo tenga permisos limitados a la base `osap_noticias`.
+La versión del servidor de desarrollo comunicada es **MariaDB 10.4.32**. Se ha revisado estáticamente la sintaxis de las dos migraciones para este motor; todavía no se ha comprobado mediante ejecución real.
 
-Las migraciones se aplican en orden y el ejecutor consulta `schema_migrations` antes de cada versión. Las tablas de la primera migración usan `IF NOT EXISTS`; la referencia a publicación principal se valida en la aplicación para evitar una dependencia circular. El catálogo de tipos también usa una inserción idempotente.
+El script `crear_bbdd_osap_noticias.bat` ejecuta las migraciones en orden con el cliente `mysql` de MariaDB. Solicita usuario y contraseña en la consola, sin escribirlos en el fichero ni pasarlos como texto en la línea de comandos. La cuenta necesita permisos para crear la base `osap_noticias`, tablas e índices. El script se detiene si falla una migración.
+
+La migración 001 crea las tablas con `IF NOT EXISTS`; la referencia a publicación principal se valida en la aplicación para evitar una dependencia circular. El catálogo de tipos usa una inserción idempotente. `schema_migrations` permite comprobar qué versiones se han aplicado.
 
 No se ha ejecutado ninguna migración ni se ha realizado ninguna escritura en la base de datos.
