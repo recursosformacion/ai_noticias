@@ -10,6 +10,7 @@ from mysql_support import MysqlClient, ROOT, load_db_config
 MIGRATIONS = [
     ROOT / "database" / "migrations" / "001_initial_schema.sql",
     ROOT / "database" / "migrations" / "002_seed_content_types.sql",
+    ROOT / "database" / "migrations" / "003_initial_source_candidates.sql",
 ]
 
 
