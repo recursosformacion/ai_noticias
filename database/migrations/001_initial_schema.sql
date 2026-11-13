@@ -129,10 +129,7 @@ CREATE TABLE IF NOT EXISTS news_publications (
   CONSTRAINT fk_news_publications_item FOREIGN KEY (news_item_id) REFERENCES news_items(id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-ALTER TABLE news_items
-  ADD CONSTRAINT fk_news_items_primary_publication
-  FOREIGN KEY (primary_publication_id) REFERENCES news_publications(id)
-  ON DELETE RESTRICT ON UPDATE RESTRICT;
+-- primary_publication_id se valida en la capa de aplicación para evitar una FK circular.
 
 CREATE TABLE IF NOT EXISTS source_observations (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
