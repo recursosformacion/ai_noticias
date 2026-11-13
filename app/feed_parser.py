@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from html import unescape
 from xml.etree import ElementTree as ET
-import re
+from urllib.parse import urljoin
 
 
 def _local(tag: str) -> str:
@@ -47,7 +47,7 @@ def _date(value: str | None) -> datetime | None:
     return parsed.astimezone(timezone.utc).replace(tzinfo=None)
 
 
-def parse_feed(xml_bytes: bytes) -> tuple[dict, list[dict]]:
+def parse_feed(xml_bytes: bytes, base_url: str | None = None) -> tuple[dict, list[dict]]:
     try:
         root = ET.fromstring(xml_bytes)
     except ET.ParseError as exc:
@@ -67,7 +67,7 @@ def parse_feed(xml_bytes: bytes) -> tuple[dict, list[dict]]:
             entries = [node for node in list(root) if _local(node.tag) == "item"]
             title = _child_text(root, {"title"})
             language = None
-            return _normalize(entries, title, language)
+            return _normalize(entries, title, language, base_url)
         if _local(channel.tag) not in {"channel", "rdf"}:
             raise ValueError("El XML recibido no parece un feed RSS 2.0 ni Atom.")
         entries = [node for node in list(channel) if _local(node.tag) == "item"]
@@ -76,10 +76,10 @@ def parse_feed(xml_bytes: bytes) -> tuple[dict, list[dict]]:
 
     if root_name not in {"rss", "feed", "rdf"}:
         raise ValueError("Formato de feed no soportado.")
-    return _normalize(entries, title, language)
+    return _normalize(entries, title, language, base_url)
 
 
-def _normalize(entries, feed_title, feed_language):
+def _normalize(entries, feed_title, feed_language, base_url=None):
     items = []
     for entry in entries:
         atom = _local(entry.tag) == "entry"
@@ -87,6 +87,8 @@ def _normalize(entries, feed_title, feed_language):
         if not title:
             continue
         link = _atom_link(entry) if atom else _child_text(entry, {"link"})
+        if link and base_url:
+            link = urljoin(base_url, link.strip())
         guid = _child_text(entry, {"id"}) if atom else _child_text(entry, {"guid"})
         description = _child_text(entry, {"summary", "description", "encoded"})
         author = _child_text(entry, {"author", "creator"})
