@@ -1,6 +1,6 @@
 # Diseño físico propuesto para MySQL/MariaDB
 
-**Estado:** borrador técnico para revisión. Traduce el modelo conceptual del documento 08 a tablas, claves e índices; todavía no es SQL ejecutable ni autoriza la creación de objetos en el servidor.
+**Estado:** borrador técnico acompañado por una primera migración SQL, aún no ejecutada ni validada contra el servidor. Traduce el modelo conceptual del documento 08 a tablas, claves e índices.
 
 **Base de datos:** `osap_noticias`.
 
@@ -320,6 +320,12 @@ No se crearán índices sobre cada campo por anticipado. Se validarán con consu
 
 No se incluyen usuarios, preferencias, suscripciones, boletines, campañas, métricas de lectura, endpoints públicos ni integración de cuentas OSAP. Tampoco se crea aquí ningún fichero de credenciales, migración SQL ni conexión real al servidor.
 
-## 8. Próximo paso
+## 8. Compatibilidad y migraciones
+
+La primera migración SQL se ha redactado para MySQL 8.0.16 o posterior en `database/migrations/001_initial_schema.sql`; el catálogo inicial de tipos de contenido está en `002_seed_content_types.sql`. La migración 001 crea `osap_noticias` si no existe y define `schema_migrations`. La migración 002 depende de la primera.
+
+No se ha comprobado la versión del servidor ni se ha ejecutado el SQL. La compatibilidad con MariaDB no está validada. Las migraciones se ejecutan una sola vez y en orden; el registro `schema_migrations` evita repetirlas.
+
+## 9. Próximo paso
 
 Validar este diseño lógico-físico y confirmar la versión del servidor. Después se prepararán migraciones SQL versionadas y datos semilla, primero para revisión; la creación efectiva de `osap_noticias` y sus tablas se realizará solo con acceso y autorización explícitos al servidor correspondiente.
