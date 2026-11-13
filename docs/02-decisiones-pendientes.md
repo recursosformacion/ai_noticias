@@ -21,6 +21,9 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 - [ ] Revisar las condiciones de uso específicas de cada fuente antes de activarla.
 - [ ] Identificar APIs oficiales disponibles para instituciones que no tengan RSS.
 - [ ] Definir idiomas y territorios que cubrirá la primera versión.
+- [x] Conservar el idioma original detectado y el idioma de cada aparición de la noticia.
+- [x] Separar versiones oficiales de la fuente y traducciones generadas por ai_noticias; documentado en [idiomas y traducciones](06-idiomas-y-traducciones.md).
+- [x] Preparar el modelo para traducciones editoriales adicionales sin generarlas masivamente antes de conocer las preferencias de idioma.
 - [ ] Establecer frecuencia y límites de consulta por fuente.
 
 ## Criterios editoriales
@@ -31,7 +34,8 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 - [x] Separar el tipo de contenido (noticia, evento, publicación académica, novedad bibliográfica, etc.) del tema musical; criterios en el documento 04.
 - [ ] Decidir si las noticias se publican automáticamente o pasan por revisión.
 - [ ] Definir el tratamiento de noticias repetidas, actualizaciones y artículos sindicados.
-- [ ] Decidir la longitud y el tono del resumen en español.
+- [ ] Decidir la longitud y el tono del resumen editorial en español.
+- [ ] Validar la detección de idioma con feeds multilingües y textos breves.
 
 ## IA
 
