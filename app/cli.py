@@ -6,7 +6,7 @@ import json
 import sys
 
 from .db import connect
-from .collector import ingest_active_channels
+from .collector import ingest_active_channels, probe_candidate_channels
 
 
 def main() -> int:
@@ -14,6 +14,11 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("sources", help="Mostrar los canales registrados y su estado.")
+
+    probe = sub.add_parser(
+        "probe", help="Comprobar LOC y BnF sin guardar elementos ni modificar la base."
+    )
+    probe.add_argument("--source-id", type=int, help="Limitar la prueba a un canal permitido.")
 
     ingest = sub.add_parser("ingest", help="Consultar fuentes RSS/Atom activas.")
     ingest.add_argument("--source-id", type=int, help="Limitar la ejecución a un canal.")
@@ -39,6 +44,11 @@ def main() -> int:
             print(json.dumps(rows, ensure_ascii=False, indent=2, default=str))
             if not rows:
                 print("No hay canales registrados. Aplica las migraciones.")
+        elif args.command == "probe":
+            results = probe_candidate_channels(connection, args.source_id)
+            print(json.dumps(results, ensure_ascii=False, indent=2, default=str))
+            if not results:
+                print("No hay canales permitidos para la prueba. Comprueba la migración 003.")
         elif args.command == "ingest":
             results = ingest_active_channels(connection, args.source_id)
             print(json.dumps(results, ensure_ascii=False, indent=2, default=str))
