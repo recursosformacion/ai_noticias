@@ -64,7 +64,7 @@ La BNE declara disponer de cinco canales RSS para:
 La referencia localizada es una entrada del propio Blog de la BNE que confirma esos cinco canales:
 https://www.bne.es/es/blog/blog-bne/las-10-preguntas-mas-frecuentes-sobre-la-bne
 
-**Pendiente:** localizar las URL actuales exactas de los cinco feeds y comprobar que siguen activos. La página de referencia es antigua, por lo que no se incorporan endpoints deducidos ni se da por garantizada su vigencia.
+**Pendiente:** localizar las URL actuales exactas de los cinco feeds y comprobar que siguen activos. La página de referencia es antigua, por lo que no se incorporan endpoints deducidos ni se da por garantizada su vigencia. La web actual de la BNE mantiene secciones diferenciadas de noticias, agenda y blog, pero la consulta automatizada de las páginas institucionales devuelve acceso restringido (403) en esta investigación; los resultados públicos consultados no exponen los enlaces RSS concretos. Por tanto, no se declara resuelto el endpoint.
 
 ## 2. Agregadores y consultas temáticas
 
@@ -138,7 +138,7 @@ Fuentes:
 | BnF – Bibliographie nationale / Partitions | RSS oficial localizado | Novedades bibliográficas musicales |
 | BnF – Bibliographie nationale / Son | RSS oficial localizado | Novedades bibliográficas de sonido |
 | Gallica – RSS de búsquedas | Mecanismo documentado; endpoint dinámico | Investigar búsquedas temáticas, no es feed general |
-| BNE – cinco RSS | Existencia declarada; URL actual pendiente | No configurar hasta localizar y probar endpoints |
+| BNE – cinco RSS | Existencia declarada; URL actual pendiente; página institucional con acceso 403 durante esta consulta | No configurar hasta localizar y probar endpoints |
 | Google News RSS | Plantilla de consulta documentada | Descubrimiento; identificar siempre el medio original |
 | AMS – Musicology Now | RSS oficial localizado | Publicación divulgativa de musicología; candidato prioritario |
 | AMS – Musicology in the news | Endpoint anunciado, pero 404 en comprobación | No activar hasta localizar URL vigente |
@@ -161,11 +161,31 @@ Antes de activar cualquier fuente en producción, registrar:
 
 No se debe inventar ni inferir una URL RSS a partir de la dirección de una web. Si no se localiza un canal oficial o una API documentada, la fuente permanece como pendiente y no se automatiza mediante scraping por defecto.
 
-## 6. Próxima investigación
+## 6. Priorización para la primera fase
 
-La siguiente tanda de trabajo debería cubrir:
+Para evitar que la primera implementación dependa de una lista excesiva de canales, se propone incorporar fuentes en tandas:
+
+### Tanda inicial de pruebas
+- LOC – In the Muse: contenido musical editorial y patrimonial, con RSS institucional localizado.
+- Musicology Now: divulgación e investigación musicológica, con RSS localizado.
+- Google News RSS: descubrimiento transversal en español e inglés, manteniendo separado el medio original.
+- BnF – Actualités: canal institucional general que requiere filtrado por contenido musical.
+- BnF – Bibliographie nationale / Partitions: novedades bibliográficas musicales, almacenadas con tipo BIBLIO y no como noticia periodística.
+
+### Tanda de ampliación
+- LOC – NLS Music Notes, por su especialización en accesibilidad.
+- LOC – Concerts & Performing Arts, como agenda.
+- BnF – Son, como novedad bibliográfica/catalográfica.
+- RILM – Bibliolore, cuando se confirme su feed.
+- BNE, cuando se recuperen y prueben las URL oficiales.
+- DOAJ y feeds de revistas/editoriales concretas, con tratamiento académico diferenciado.
+
+La prioridad es probar una fuente de cada comportamiento relevante (noticia editorial, agregador, agenda y novedad bibliográfica), no activar muchos feeds de golpe.
+
+## 7. Próxima investigación
+
 1. Localizar los cinco endpoints actuales de la BNE y comprobar sus respuestas.
 2. Comprobar directamente los feeds de LOC y BnF con un lector RSS, inspeccionando fechas, campos y volumen.
-3. Ampliar el inventario con revistas y centros de musicología; ya se han localizado Musicology Now y Bibliolore, y se ha detectado un endpoint AMS que requiere corrección.
+3. Localizar el RSS de Bibliolore y corregir el endpoint AMS anunciado que devuelve 404.
 4. Preparar una muestra de entradas reales para evaluar relevancia, duplicados y separación entre noticia, agenda y novedad bibliográfica.
 5. Revisar las condiciones de uso de cada canal antes de fijar qué metadatos o fragmentos se almacenarán.
