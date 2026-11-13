@@ -14,7 +14,7 @@ EXPECTED_TABLES = {
     "editorial_analyses", "news_item_categories", "editorial_texts",
     "editorial_translations",
 }
-EXPECTED_MIGRATIONS = {"001_initial_schema", "002_seed_content_types", "003_initial_source_candidates"}
+EXPECTED_MIGRATIONS = {"001_initial_schema", "002_seed_content_types", "003_initial_source_candidates", "004_source_content_type_hints"}
 EXPECTED_CONTENT_TYPES = {
     "NEWS", "EVENT", "RELEASE", "RESEARCH", "BIBLIO",
     "COLLECTION", "INTERVIEW", "OPINION", "OTHER", "REVIEW",
@@ -40,6 +40,12 @@ def main() -> int:
             source_counts = client.run(
                 "SELECT status, COUNT(*) FROM source_channels GROUP BY status ORDER BY status"
             )
+            biblio_mapping = client.run(
+                "SELECT COUNT(*) FROM source_channels s "
+                "JOIN content_types ct ON ct.id = s.default_content_type_id "
+                "WHERE s.id = 6 AND s.url = 'https://bibliographienationale.bnf.fr/rss/mus' "
+                "AND ct.code = 'BIBLIO'"
+            )
             fk_count = int(client.run(
                 "SELECT COUNT(*) FROM information_schema.KEY_COLUMN_USAGE "
                 "WHERE TABLE_SCHEMA = DATABASE() AND REFERENCED_TABLE_NAME IS NOT NULL"
@@ -61,6 +67,7 @@ def main() -> int:
         print(f"Migraciones registradas: {', '.join(sorted(migrations)) or 'ninguna'}")
         print(f"Tipos de contenido: {len(content_types)} (esperados: {len(EXPECTED_CONTENT_TYPES)})")
         print("Canales por estado: " + (source_counts.replace("\n", "; ") or "ninguno"))
+        print("Canal BnF con tipo predeterminado BIBLIO: " + ("sí" if biblio_mapping == "1" else "NO"))
 
         if missing_tables:
             print("FALTAN TABLAS: " + ", ".join(sorted(missing_tables)))
@@ -71,7 +78,10 @@ def main() -> int:
         if engine_count != len(EXPECTED_TABLES):
             print("AVISO: el número de tablas InnoDB no coincide con el esquema esperado.")
 
-        if missing_tables or missing_migrations or missing_types or engine_count != len(EXPECTED_TABLES):
+        if biblio_mapping != "1":
+            print("FALTA: el canal BnF (ID 6) debe tener tipo predeterminado BIBLIO.")
+
+        if missing_tables or missing_migrations or missing_types or biblio_mapping != "1" or engine_count != len(EXPECTED_TABLES):
             print("RESULTADO: revisión incompleta; hay que corregir lo indicado.")
             return 2
 
