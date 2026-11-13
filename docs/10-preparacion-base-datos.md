@@ -27,8 +27,10 @@ El fichero local puede contener credenciales de desarrollo. No se copian sus val
 
 La versión del servidor de desarrollo comunicada es **MariaDB 10.4.32**. Se ha revisado estáticamente la sintaxis de las dos migraciones para este motor; todavía no se ha comprobado mediante ejecución real.
 
-El script `crear_bbdd_osap_noticias.bat` ejecuta las migraciones en orden con el cliente `mysql` de MariaDB. Solicita usuario y contraseña en la consola, sin escribirlos en el fichero ni pasarlos como texto en la línea de comandos. La cuenta necesita permisos para crear la base `osap_noticias`, tablas e índices. El script se detiene si falla una migración.
+El script `crear_bbdd_osap_noticias.bat` ejecuta `tools/migrate.py`, que lee host, puerto, base, usuario y contraseña de `osap.toml` (la contraseña también puede venir de `OSAP_DB_PASSWORD`). No solicita credenciales por consola ni las imprime. Para conectar usa un fichero temporal de opciones que elimina al terminar. La cuenta necesita permisos para crear la base `osap_noticias`, tablas e índices. El script se detiene si falla una migración.
+
+Para comprobar una instalación ya creada, ejecutar `verificar_bbdd_osap_noticias.bat`. Este llama a `tools/verify_database.py` y comprueba las 17 tablas, las dos migraciones registradas y los diez tipos de contenido. No modifica datos.
 
 La migración 001 crea las tablas con `IF NOT EXISTS`; la referencia a publicación principal se valida en la aplicación para evitar una dependencia circular. El catálogo de tipos usa una inserción idempotente. `schema_migrations` permite comprobar qué versiones se han aplicado.
 
-No se ha ejecutado ninguna migración ni se ha realizado ninguna escritura en la base de datos.
+El usuario ha confirmado que la base de datos ya está creada en su entorno local. La verificación de tablas, claves foráneas y catálogo semilla queda pendiente de ejecutar desde ese equipo mediante `verificar_bbdd_osap_noticias.bat`.
