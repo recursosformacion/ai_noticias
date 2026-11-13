@@ -16,7 +16,8 @@ Este documento registra asuntos que requieren investigación o acuerdo. No se co
 - [ ] Localizar y comprobar las URL actuales de los cinco feeds de la BNE.
 - [ ] Comprobar técnicamente la respuesta, campos, fechas y volumen de los feeds identificados de LOC y BnF.
 - [ ] Validar las consultas de Google News RSS y la extracción de la URL del medio original.
-- [x] Ampliar inventario con Bachtrack, Music Business Worldwide y NPR Music; sus endpoints están localizados y pendientes de validación de contenido.
+- [x] Ampliar inventario con Bachtrack, Music Business Worldwide, NPR Music, Scherzo y Beckmesser; sus endpoints están localizados y pendientes de validación de contenido.
+- [x] Registrar Ópera Actual como fuente editorial relevante, pero no activar el endpoint candidato porque la comprobación devolvió HTML en lugar de RSS.
 - [ ] Revisar las condiciones de uso específicas de cada fuente antes de activarla.
 - [ ] Identificar APIs oficiales disponibles para instituciones que no tengan RSS.
 - [ ] Definir idiomas y territorios que cubrirá la primera versión.
