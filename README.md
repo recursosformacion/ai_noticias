@@ -4,9 +4,9 @@ Paquete independiente para recopilar, clasificar y almacenar en MySQL/MariaDB no
 
 ## Estado
 
-**Fase actual: diseño de la recopilación, clasificación y carga en MySQL/MariaDB.**
+**Fase actual: primera implementación del recolector RSS/Atom y persistencia.**
 
-El objetivo de esta primera fase es terminar con las noticias recopiladas, normalizadas, deduplicadas, clasificadas y cargadas correctamente en MySQL/MariaDB. Las preferencias personales, las vistas personalizadas, la integración con OSAP y los boletines por correo quedan fuera de esta fase. Este repositorio recoge ideas, fuentes potenciales, decisiones de arquitectura y cuestiones pendientes; todavía no contiene una aplicación funcional ni debe interpretarse como una especificación cerrada.
+La base `osap_noticias` ya está creada y verificada en el entorno local MariaDB 10.4.32. El repositorio contiene ahora un parser RSS/Atom, captura HTTP condicional (ETag/Last-Modified), registro de ejecuciones, persistencia transaccional e idempotente de observaciones/publicaciones y registro inicial de seis canales candidatos. Los canales se cargan en estado `PAUSED` hasta revisar sus condiciones de uso. La clasificación con IA será una fase posterior de esta primera entrega; usuarios, preferencias y boletines siguen fuera de alcance.
 
 ## Objetivo
 
@@ -32,7 +32,7 @@ Construir un recolector que:
 - [Diseño físico propuesto para MySQL/MariaDB](docs/09-diseno-fisico-mysql.md)
 - [Preparación de la base de datos y configuración](docs/10-preparacion-base-datos.md)
 
-Para verificar la instalación local de MariaDB, ejecutar `verificar_bbdd_osap_noticias.bat`. Los scripts de base de datos leen la configuración local de `osap.toml`, que no se versiona.
+Para verificar la instalación local de MariaDB, ejecutar `verificar_bbdd_osap_noticias.bat`. Tras actualizar el repositorio, aplicar las nuevas migraciones con `crear_bbdd_osap_noticias.bat`. Los scripts de base de datos leen la configuración local de `osap.toml`, que no se versiona.
 
 ## Principios iniciales
 
@@ -48,9 +48,9 @@ Para verificar la instalación local de MariaDB, ejecutar `verificar_bbdd_osap_n
 ## Tecnologías propuestas (no definitivas)
 
 - Python.
-- feedparser para feeds RSS/Atom.
+- Parser RSS/Atom basado inicialmente en la biblioteca estándar de Python.
 - MySQL/MariaDB para persistencia; nombre acordado de la base de datos: `osap_noticias`.
 - API de IA con adaptador intercambiable (por ejemplo, Gemini o Groq).
 
 
-Las migraciones iniciales están preparadas como borrador en `database/migrations/`. No se ejecutarán hasta verificar la versión y los permisos del servidor y aprobar la conexión de la cuenta específica de ai_noticias.
+Las migraciones `001` a `003` están en `database/migrations/`. Se aplican desde `crear_bbdd_osap_noticias.bat`, leyendo la configuración local `osap.toml`. Para listar fuentes: `py -3 -m app.cli sources`. Para activar un canal tras revisar sus condiciones: `py -3 -m app.cli activate --source-id ID --confirm-terms-reviewed`. Para capturar canales activos: `py -3 -m app.cli ingest` o `capturar_noticias.bat`. Las dependencias están en `requirements.txt`; las pruebas unitarias se ejecutan con `py -3 -m unittest discover -s tests -v`.
