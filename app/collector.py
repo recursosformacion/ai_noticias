@@ -40,13 +40,13 @@ def _observation_identity(item: dict) -> str:
     title = _identity_text(item.get("title"))
     published = item.get("published_at")
     if isinstance(published, datetime):
-        published_key = published.replace(tzinfo=None).isoformat(timespec="seconds")
+        published_key = (published.astimezone(timezone.utc).replace(tzinfo=None) if published.tzinfo else published).isoformat(timespec="seconds")
     else:
         published_key = _identity_text(item.get("published_raw"))
     if not title or not published_key:
         raise ValueError("No se puede crear la huella: la noticia necesita título y fecha de publicación.")
     digest = sha256((title + "|" + published_key).encode("utf-8")).hexdigest()
-    return "fingerprint:v2:" + digest
+    return digest
 
 
 def canonical_url(value: str | None) -> str | None:
@@ -169,8 +169,9 @@ def _persist_item(cursor, channel, run_id, item, now):
         raise ValueError("La URL del elemento supera los 2048 caracteres admitidos.")
     if item["external_id"] and len(item["external_id"]) > 1000:
         raise ValueError("El identificador externo supera los 1000 caracteres admitidos.")
-    external_id = _observation_identity(item)
-    external_hash = _hash(external_id)
+    identity_digest = _observation_identity(item)
+    external_id = "fingerprint:v2:" + identity_digest
+    external_hash = bytes.fromhex(identity_digest)
     content_hash = _hash(json.dumps(
         {k: item.get(k).isoformat() if isinstance(item.get(k), datetime) else item.get(k)
          for k in ("title", "url", "description", "author", "published_raw", "updated_raw", "language")},
