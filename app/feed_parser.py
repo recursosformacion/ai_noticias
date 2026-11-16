@@ -90,7 +90,8 @@ def _normalize(entries, feed_title, feed_language, base_url=None):
         if link and base_url:
             link = urljoin(base_url, link.strip())
         guid = _child_text(entry, {"id"}) if atom else _child_text(entry, {"guid"})
-        description = _child_text(entry, {"summary", "description", "encoded"})
+        # Atom genérico usa <content>; RSS usa <description> o <content:encoded>.
+        description = _child_text(entry, {"summary", "description", "encoded", "content"})
         author = _child_text(entry, {"author", "creator"})
         if author and author.strip().startswith("<"):
             author = _child_text(next((n for n in list(entry) if _local(n.tag) == "author"), entry), {"name"}) or author

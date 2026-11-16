@@ -14,7 +14,7 @@ EXPECTED_TABLES = {
     "editorial_analyses", "news_item_categories", "editorial_texts",
     "editorial_translations",
 }
-EXPECTED_MIGRATIONS = {"001_initial_schema", "002_seed_content_types", "003_initial_source_candidates", "004_source_content_type_hints"}
+EXPECTED_MIGRATIONS = {"001_initial_schema", "002_seed_content_types", "003_initial_source_candidates", "004_source_content_type_hints", "005_description_identity", "006_taxonomy_seed", "007_free_music_sources"}
 EXPECTED_CONTENT_TYPES = {
     "NEWS", "EVENT", "RELEASE", "RESEARCH", "BIBLIO",
     "COLLECTION", "INTERVIEW", "OPINION", "OTHER", "REVIEW",

@@ -13,6 +13,16 @@ MIGRATIONS = [
     ROOT / "database" / "migrations" / "003_initial_source_candidates.sql",
     ROOT / "database" / "migrations" / "004_source_content_type_hints.sql",
     ROOT / "database" / "migrations" / "005_description_identity.sql",
+    ROOT / "database" / "migrations" / "006_taxonomy_seed.sql",
+    ROOT / "database" / "migrations" / "007_free_music_sources.sql",
+    ROOT / "database" / "migrations" / "008_noticias_module.sql",
+    ROOT / "database" / "migrations" / "009_user_profiles.sql",
+    ROOT / "database" / "migrations" / "010_topic_terms_i18n.sql",
+    ROOT / "database" / "migrations" / "011_delivery_modes.sql",
+    ROOT / "database" / "migrations" / "012_corpus_musical.sql",
+    ROOT / "database" / "migrations" / "013_outbound_queue.sql",
+    ROOT / "database" / "migrations" / "014_fuente_es.sql",
+    ROOT / "database" / "migrations" / "015_outbound_userref.sql",
 ]
 
 

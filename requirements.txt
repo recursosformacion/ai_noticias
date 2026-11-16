@@ -1,1 +1,4 @@
 PyMySQL>=1.1,<2
+certifi>=2024.2
+fastapi>=0.115,<1
+uvicorn>=0.30,<1

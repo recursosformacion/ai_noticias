@@ -31,6 +31,34 @@ Construir un recolector que:
 - [Modelo conceptual de persistencia](docs/08-modelo-conceptual-persistencia.md)
 - [Diseño físico propuesto para MySQL/MariaDB](docs/09-diseno-fisico-mysql.md)
 - [Preparación de la base de datos y configuración](docs/10-preparacion-base-datos.md)
+- [Informe de captura 15-11-2026](docs/11-informe-captura-2026-11-15.md)
+- [Catálogo de fuentes de libre difusión](docs/12-catalogo-fuentes-libres.md)
+- [Nota de solicitud de permiso a editores](docs/13-nota-solicitud-permiso.md)
+- [Nota de comunicación a las fuentes](docs/14-nota-comunicacion-fuentes.md)
+- [Módulo de boletín por correo (histórico)](docs/15-modulo-boletin-cron.md)
+- [Integración de ai_noticias en OSAP](docs/16-integracion-osap.md)
+
+### Integración con OSAP (vigente)
+
+La forma de acceso es la **sesión de OSAP**: el usuario entra en `/noticias`, OSAP lee
+su idioma y sus temas de `osap-auth` y consulta esta API interna. `ai_noticias` no pide
+la lista de usuarios, no guarda correos y no envía mensajes. Contrato y configuración:
+[docs/16-integracion-osap.md](docs/16-integracion-osap.md).
+
+Ejecución local de la API:
+
+```powershell
+$env:OSAP_NEWS_API_TOKEN = "osap-dev-news-token"
+python -m uvicorn app.api:app --host 127.0.0.1 --port 8400
+```
+
+### Boletín por correo (histórico, no es la integración de OSAP)
+
+Los comandos `mailbox`, `digest` y la tabla `outbound_messages` se conservan como
+herramientas históricas de prueba. **OSAP no los consume** y no son la vía de acceso:
+la identidad, el consentimiento y cualquier envío pertenecen a OSAP (`CommunicationEvent`
+→ worker → `EmailSender`). No se debe pedir a `ai_noticias` la lista de usuarios.
+
 
 Para verificar la instalación local de MariaDB, ejecutar `verificar_bbdd_osap_noticias.bat`. Tras actualizar el repositorio, aplicar las nuevas migraciones con `crear_bbdd_osap_noticias.bat`. Los scripts de base de datos leen la configuración local de `osap.toml`, que no se versiona.
 
@@ -53,7 +81,7 @@ Para verificar la instalación local de MariaDB, ejecutar `verificar_bbdd_osap_n
 - API de IA con adaptador intercambiable (por ejemplo, Gemini o Groq).
 
 
-Las migraciones `001` a `005` están en `database/migrations/`. La identidad de noticias se calcula exclusivamente mediante SHA-256 de la descripción normalizada; publicaciones de distintas fuentes con la misma descripción se enlazan a un mismo registro de noticia, conservando cada publicación y su procedencia. Se aplican desde `crear_bbdd_osap_noticias.bat`, leyendo la configuración local `osap.toml`. Para listar fuentes: ejecutar `ver_fuentes.bat` o `py -3 -m app.cli sources`. Para activar un canal tras revisar sus condiciones: `py -3 -m app.cli activate --source-id ID --confirm-terms-reviewed`. Para capturar canales activos: `py -3 -m app.cli ingest` o `capturar_noticias.bat`. Las dependencias están en `requirements.txt`; las pruebas unitarias se ejecutan con `py -3 -m unittest discover -s tests -v`.
+Las migraciones `001` a `007` están en `database/migrations/`. La `007` sustituye el catálogo inicial por 15 canales de libre difusión (dominio público, CC0, CC BY, CC BY-SA, Licence Ouverte y Open Access) y deja en `PAUSED` los medios sin permiso de reutilización. Para vaciar los datos de prueba y re-sembrar: `py -3 -m tools.reset_all_data --apply`, después `crear_bbdd_osap_noticias.bat`. Informe del corpus: `py -3 -m tools.informe_captura`. La identidad de noticias se calcula exclusivamente mediante SHA-256 de la descripción normalizada; publicaciones de distintas fuentes con la misma descripción se enlazan a un mismo registro de noticia, conservando cada publicación y su procedencia. Se aplican desde `crear_bbdd_osap_noticias.bat`, leyendo la configuración local `osap.toml`. Para listar fuentes: ejecutar `ver_fuentes.bat` o `py -3 -m app.cli sources`. Para activar un canal tras revisar sus condiciones: `py -3 -m app.cli activate --source-id ID --confirm-terms-reviewed`. Para capturar canales activos: `py -3 -m app.cli ingest` o `capturar_noticias.bat`. Las dependencias están en `requirements.txt`; las pruebas unitarias se ejecutan con `py -3 -m unittest discover -s tests -v`.
 
 
 ### Sondeo técnico previo (sin persistencia)

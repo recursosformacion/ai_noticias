@@ -6,11 +6,19 @@ from hashlib import sha256
 import html
 import json
 import re
+import ssl
 import time
 import unicodedata
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlsplit, urlunsplit
 from urllib.request import Request, urlopen
+
+try:  # El almacén de certificados de Windows puede estar desactualizado.
+    import certifi
+
+    SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
+except Exception:  # pragma: no cover - se usa el almacén del sistema
+    SSL_CONTEXT = ssl.create_default_context()
 
 from .db import transaction
 from .feed_parser import parse_feed
@@ -83,7 +91,7 @@ def _fetch(channel: dict) -> tuple[int, bytes, dict, str]:
         headers["If-Modified-Since"] = channel["last_modified"]
     request = Request(channel["url"], headers=headers)
     try:
-        with urlopen(request, timeout=25) as response:
+        with urlopen(request, timeout=25, context=SSL_CONTEXT) as response:
             return response.status, response.read(8 * 1024 * 1024 + 1), dict(response.headers.items()), response.geturl()
     except HTTPError as exc:
         if exc.code == 304:

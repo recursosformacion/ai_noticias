@@ -10,3 +10,7 @@ password = ""
 
 # La aplicación deberá leer la contraseña desde OSAP_DB_PASSWORD
 # (o desde el gestor de secretos del servicio), nunca desde Git.
+
+# Token de la API interna OSAP -> ai_noticias (o OSAP_NEWS_API_TOKEN).
+[api]
+token = ""

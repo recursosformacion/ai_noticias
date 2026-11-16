@@ -20,3 +20,11 @@ htmlcov/
 data/
 *.sqlite
 *.sqlite3
+
+# Aider Studio (auto-added)
+REPO_MAP.md
+.aider/
+
+.vscode/
+
+var/
