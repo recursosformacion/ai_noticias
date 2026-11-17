@@ -123,10 +123,11 @@ def news(
 def main() -> None:
     import uvicorn
 
-    uvicorn.run("app.api:app", host="127.0.0.1", port=8400)
+    uvicorn.run("app.api:app", host="127.0.0.1", port=8401)
 
 
 if __name__ == "__main__":
     main()
+
 
 
